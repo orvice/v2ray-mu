@@ -9,7 +9,6 @@ import (
 	"v2ray.com/core"
 
 	"bytes"
-	"reflect"
 	"time"
 	_ "v2ray.com/core/main/distro/all"
 	_ "v2ray.com/core/tools/conf"
