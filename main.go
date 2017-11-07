@@ -67,7 +67,7 @@ func check() {
 	if err != nil {
 		panic(err)
 	}
-	time.Sleep(time.Second * 10)
+	time.Sleep(cfg.SyncTime)
 	for {
 		res, err := apiClient.GetV2rayUsersData()
 		if err != nil {
@@ -75,7 +75,7 @@ func check() {
 			time.Sleep(cfg.SyncTime)
 			continue
 		}
-		if reflect.DeepEqual(lastRes, res) {
+		if lastRes != res {
 			fmt.Println("restart server")
 			server.Close()
 		}
