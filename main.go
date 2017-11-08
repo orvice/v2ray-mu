@@ -77,8 +77,8 @@ func check() {
 		if lastRes != res {
 			fmt.Println("restart server")
 			server.Close()
+			go run()
 		}
-		go run()
 		time.Sleep(cfg.SyncTime)
 	}
 }
