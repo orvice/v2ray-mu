@@ -15,8 +15,8 @@ RUN CGO_ENABLED=0 go build
 # Now tell Docker what command to run when the container starts
 # CMD ["go-wrapper", "run"]
 
-FROM 1.9-alpine
+FROM golang:1.9-alpine
 
 COPY --from=builder /go/src/github.com/orvice/v2ray-mu/v2ray-mu .
 
-ENTRYPOINT [ "v2ray-mu" ]
+ENTRYPOINT [ "./v2ray-mu" ]
