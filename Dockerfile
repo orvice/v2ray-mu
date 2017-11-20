@@ -15,8 +15,17 @@ RUN CGO_ENABLED=0 go build
 # Now tell Docker what command to run when the container starts
 # CMD ["go-wrapper", "run"]
 
-FROM golang:1.9-alpine
+FROM alpine
 
 COPY --from=builder /go/src/github.com/orvice/v2ray-mu/v2ray-mu .
+
+RUN apk update
+RUN apk upgrade
+RUN apk add ca-certificates && update-ca-certificates
+# Change TimeZone
+RUN apk add --update tzdata
+ENV TZ=Asia/Shanghai
+# Clean APK cache
+RUN rm -rf /var/cache/apk/*
 
 ENTRYPOINT [ "./v2ray-mu" ]
