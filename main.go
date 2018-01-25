@@ -84,7 +84,7 @@ func check() {
 }
 
 func main() {
-
+	go pprof()
 	core.PrintVersion()
 	initCfg()
 	InitWebApi()
