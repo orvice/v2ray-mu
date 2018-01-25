@@ -11,7 +11,6 @@ import (
 	"bytes"
 	"time"
 	_ "v2ray.com/core/main/distro/all"
-	_ "v2ray.com/core/tools/conf"
 )
 
 var (
