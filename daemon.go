@@ -21,6 +21,7 @@ func check() error {
 	log.Info("check users from mu")
 	users, err := apiClient.GetUsers()
 	if err != nil {
+		log.Errorf("get users from error: %v", err)
 		return err
 	}
 	log.Infof("get %d users from mu", len(users))
@@ -30,7 +31,7 @@ func check() error {
 			// run user
 			err = VM.AddUser(&user.V2rayUser)
 			if err != nil {
-				log.Errorf("add user error %v",err)
+				log.Errorf("add user error %v", err)
 				// @todo error handle
 			}
 			UM.AddUser(user)
@@ -43,7 +44,7 @@ func check() error {
 			err = VM.RemoveUser(&user.V2rayUser)
 
 			if err != nil {
-				log.Errorf("remove user error %v",err)
+				log.Errorf("remove user error %v", err)
 				// @todo error handle
 			}
 			UM.RemoveUser(user)
