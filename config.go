@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/orvice/utils/env"
 	"time"
+
+	"github.com/orvice/utils/env"
 )
 
 var (
@@ -13,6 +14,9 @@ type Config struct {
 	WebApi   WebApiCfg
 	Base     BaseCfg
 	SyncTime time.Duration
+
+	V2rayClientAddr string
+	V2rayTag        string
 }
 
 type BaseCfg struct {
@@ -32,4 +36,6 @@ func initCfg() {
 	}
 	st := env.GetInt("SYNC_TIME", 60)
 	cfg.SyncTime = time.Second * time.Duration(st)
+	cfg.V2rayClientAddr = env.Get("V2RAY_ADDR")
+	cfg.V2rayTag = env.Get("V2RAY_TAG")
 }
