@@ -33,6 +33,8 @@ func check() error {
 			if err != nil {
 				log.Errorf("add user error %v", err)
 				// @todo error handle
+				time.Sleep(time.Second*10)
+				continue
 			}
 			UM.AddUser(user)
 			continue
@@ -45,6 +47,8 @@ func check() error {
 
 			if err != nil {
 				log.Errorf("remove user error %v", err)
+				time.Sleep(time.Second*10)
+				continue
 				// @todo error handle
 			}
 			UM.RemoveUser(user)
