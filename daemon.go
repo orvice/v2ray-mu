@@ -30,6 +30,7 @@ func check() error {
 			// run user
 			err = VM.AddUser(&user.V2rayUser)
 			if err != nil {
+				log.Errorf("add user error %v",err)
 				// @todo error handle
 			}
 			UM.AddUser(user)
@@ -42,6 +43,7 @@ func check() error {
 			err = VM.RemoveUser(&user.V2rayUser)
 
 			if err != nil {
+				log.Errorf("remove user error %v",err)
 				// @todo error handle
 			}
 			UM.RemoveUser(user)
