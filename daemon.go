@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/orvice/v2ray-manager"
 	"time"
+
+	"github.com/orvice/v2ray-manager"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -16,12 +18,15 @@ func InitV2rayManager() error {
 }
 
 func check() error {
+	log.Info("check users from mu")
 	users, err := apiClient.GetUsers()
 	if err != nil {
 		return err
 	}
+	log.Infof("get %d users from mu", len(users))
 	for _, user := range users {
 		if user.IsEnable() && !UM.Exist(user) {
+			log.Infof("run user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 			// run user
 			err = VM.AddUser(&user.V2rayUser)
 			if err != nil {
@@ -32,6 +37,7 @@ func check() error {
 		}
 
 		if !user.IsEnable() && UM.Exist(user) {
+			log.Infof("stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 			// stop user
 			err = VM.RemoveUser(&user.V2rayUser)
 
