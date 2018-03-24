@@ -1,30 +1,36 @@
 package main
 
 import (
+	"context"
 	"sync"
 
 	"github.com/catpie/musdk-go"
+	"github.com/orvice/v2ray-manager"
 )
-
-var (
-	UM *UserManager
-)
-
-func InitUserManager() {
-	UM = NewUserManager()
-}
 
 type UserManager struct {
 	users   map[int64]musdk.User
 	usersMu *sync.RWMutex
+	ctx     context.Context
+	cancel  func()
+
+	vm *v2raymanager.Manager
 }
 
-func NewUserManager() *UserManager {
+func NewUserManager() (*UserManager, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	vm, err := getV2rayManager()
+	if err != nil {
+		return nil, err
+	}
 	um := &UserManager{
 		users:   make(map[int64]musdk.User),
 		usersMu: new(sync.RWMutex),
+		ctx:     ctx,
+		cancel:  cancel,
+		vm:      vm,
 	}
-	return um
+	return um, nil
 }
 
 func (u *UserManager) AddUser(user musdk.User) {
@@ -37,6 +43,11 @@ func (u *UserManager) RemoveUser(user musdk.User) {
 	u.usersMu.Lock()
 	delete(u.users, user.Id)
 	u.usersMu.Unlock()
+}
+
+func (u *UserManager) GetUser(id int64) (musdk.User, bool) {
+	user, ok := u.users[id]
+	return user, ok
 }
 
 func (u *UserManager) Exist(user musdk.User) bool {

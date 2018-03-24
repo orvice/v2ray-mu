@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/orvice/kit/log"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
 var (
-	ApiAddr string = ""
+	logger log.Logger
 )
 
 func init() {
@@ -17,16 +18,17 @@ func init() {
 func main() {
 	var err error
 	initCfg()
-	InitWebApi()
-	InitUserManager()
+	logger = log.NewFileLogger(cfg.LogPath)
 
-	err = InitV2rayManager()
+	InitWebApi()
+
+	um, err := NewUserManager()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
 	}
 
-	go daemon()
+	go um.Run()
 
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, os.Kill, syscall.SIGTERM)
