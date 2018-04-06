@@ -11,6 +11,6 @@ var (
 func InitWebApi() error {
 	logger.Info("init mu api")
 	cfg := cfg.WebApi
-	apiClient = musdk.NewClient(cfg.Url, cfg.Token, cfg.NodeId, musdk.TypeSs)
+	apiClient = musdk.NewClient(cfg.Url, cfg.Token, cfg.NodeId, musdk.TypeV2ray)
 	return nil
 }

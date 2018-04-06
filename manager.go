@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 
+	"github.com/catpie/musdk-go"
 	"github.com/orvice/v2ray-manager"
 )
 
@@ -20,34 +21,38 @@ func (u *UserManager) check() error {
 	}
 	logger.Infof("get %d users from mu", len(users))
 	for _, user := range users {
-		if user.IsEnable() && !u.Exist(user) {
-			logger.Infof("run user id %d uuid %s", user.Id, user.V2rayUser.UUID)
-			// run user
-			err = u.vm.AddUser(&user.V2rayUser)
-			if err != nil {
-				logger.Errorf("add user error %v", err)
-				// @todo error handle
-				time.Sleep(time.Second * 10)
-				continue
-			}
-			u.AddUser(user)
-			continue
-		}
+		u.checkUser(user)
+	}
 
-		if !user.IsEnable() && u.Exist(user) {
-			logger.Infof("stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
-			// stop user
-			err = u.vm.RemoveUser(&user.V2rayUser)
+	return nil
+}
 
-			if err != nil {
-				logger.Errorf("remove user error %v", err)
-				time.Sleep(time.Second * 10)
-				continue
-				// @todo error handle
-			}
-			u.RemoveUser(user)
-			continue
+func (u *UserManager) checkUser(user musdk.User) error {
+	var err error
+	if user.IsEnable() && !u.Exist(user) {
+		logger.Infof("run user id %d uuid %s", user.Id, user.V2rayUser.UUID)
+		// run user
+		err = u.vm.AddUser(&user.V2rayUser)
+		if err != nil {
+			logger.Errorf("add user error %v", err)
+			return err
 		}
+		u.AddUser(user)
+		return nil
+	}
+
+	if !user.IsEnable() && u.Exist(user) {
+		logger.Infof("stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
+		// stop user
+		err = u.vm.RemoveUser(&user.V2rayUser)
+
+		if err != nil {
+			logger.Errorf("remove user error %v", err)
+			time.Sleep(time.Second * 10)
+			return err
+		}
+		u.RemoveUser(user)
+		return nil
 	}
 
 	return nil
@@ -57,6 +62,7 @@ func (u *UserManager) restartUser() {}
 
 func (u *UserManager) Run() error {
 	for {
+		u.saveTrafficDaemon()
 		u.check()
 		time.Sleep(cfg.SyncTime)
 	}
@@ -65,4 +71,12 @@ func (u *UserManager) Run() error {
 
 func (u *UserManager) Down() {
 	u.cancel()
+}
+
+func (u *UserManager) saveTrafficDaemon() {
+	u.usersMu.RLock()
+	defer u.usersMu.RUnlock()
+	for _, user := range u.users {
+		u.saveUserTraffic(user)
+	}
 }
