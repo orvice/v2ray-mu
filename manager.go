@@ -74,6 +74,7 @@ func (u *UserManager) Down() {
 }
 
 func (u *UserManager) saveTrafficDaemon() {
+	logger.Infof("run save traffic daemon...")
 	u.usersMu.RLock()
 	defer u.usersMu.RUnlock()
 	for _, user := range u.users {
