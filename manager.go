@@ -34,9 +34,10 @@ func (u *UserManager) checkUser(user musdk.User) error {
 		// run user
 		err = u.vm.AddUser(&user.V2rayUser)
 		if err != nil {
-			logger.Errorf("add user error %v", err)
+			logger.Errorf("add user %s error %v", user.V2rayUser.UUID, err)
 			return err
 		}
+		logger.Infof("add user success %s", user.V2rayUser.UUID)
 		u.AddUser(user)
 		return nil
 	}
