@@ -1,0 +1,17 @@
+version: "2"
+
+services:
+  ss:
+    image: orvice/v2ray-mu
+    restart: always
+    volumes:
+      - ./log:/var/log
+    environment:
+      - MU_URI=#PANEL_ADDR#/mu/v2
+      - MU_NODE_ID=#ID_OF_NODE#
+      - MU_TOKEN=#MU_KEY#
+    container_name: v2ray-mu
+    network_mode: host
+    env_file:
+      - mu.env
+ 
