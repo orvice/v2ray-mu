@@ -29,7 +29,7 @@
     "tag": "api"
   }],
   "log": {
-    "loglevel": "debug",
+    "loglevel": "warning",
     "access": "log/access.log",
     "error": "log/error.log"
   },
