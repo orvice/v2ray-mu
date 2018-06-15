@@ -18,6 +18,9 @@ docker stop $v2ray_mu_cid
 docker rm $v2ray_mu_cid
 fi
 
+chmod +x clearLogs.sh
+./cleanLogs.sh
+
 docker-compose up -d
 nohup /root/v2ray/v2ray/v2ray --config=/root/v2ray/v2ray/cfg.json>> /dev/null 2>&1 &
 
@@ -37,4 +40,3 @@ echo '***Fail to start V2Ray-mu Manager***'
 else
 echo 'Success to start V2Ray-mu Manager (cid:'$v2ray_mu_cid')'
 fi
-
