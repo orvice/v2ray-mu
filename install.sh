@@ -45,7 +45,12 @@ sed -i "s;##mu_uri##;$mu_uri;g" mu.conf
 sed -i "s;##mu_key##;$mu_key;g" mu.conf
 sed -i "s;##node_id##;$node_id;g" mu.conf
 wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/run.sh
-wget https://github.com/tonychanczm/easy-v2ray-mu/blob/dev/stop.sh
+wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/stop.sh
 wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/cleanLogs.sh
-wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/master/catLog.sh
+wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/catLogs.sh
+chmod +x *
+echo '-------------------------------'
+echo '|       Install finshed       |'
+echo '|      please run ./run.sh    |'
+echo '-------------------------------'
 
