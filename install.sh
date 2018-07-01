@@ -1,4 +1,5 @@
 #!/bin/bash
+#a strange script to install v2ray-mu
 clear
 mu_uri=$1
 mu_key=$2
