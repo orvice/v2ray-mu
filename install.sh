@@ -41,7 +41,7 @@ fi
 echo '-------------------------------'
 echo '|        Installing...        |'
 echo '-------------------------------'
-yum install wget
+yum install unzip
 wget https://github.com/v2ray/v2ray-core/releases/download/v3.27/v2ray-linux-64.zip
 unzip v2ray-linux-64.zip
 rm -rf v2ray-linux-64.zip
