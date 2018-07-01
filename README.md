@@ -1,6 +1,6 @@
 # easy-v2ray-mu
 ## How to install
-### yum install wget && wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/install.sh 
+### yum install wget -y && wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/install.sh 
 ## Then,
 ### sh install.sh
 ## OR
@@ -8,4 +8,4 @@
 
 ## ONE KEY INSTALL  
 ### eg:  
-`yum install wget && wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/install.sh && sh install.sh http://www.baidu.com/mu/v2 keyskeyskeys 10`  
+`yum install wget -y && wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/install.sh && sh install.sh http://www.baidu.com/mu/v2 keyskeyskeys 10`  
