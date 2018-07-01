@@ -6,17 +6,17 @@ node_id=$3
 echo '-------------------------------'
 echo '|  Configuring Easy-V2ray-Mu  |'
 echo '-------------------------------'
-if [ $node_id ];
+if [ !$node_id ];
 then 
 	echo 'Please enter your Node ID:'
 	read node_id
 fi
-if [ $mu_uri ];
+if [ !$mu_uri ];
 then 
 	echo 'Please enter your Mu-api URI(eg:http://www.xxxx.com/mu/v2):'
 	read mu_uri
 fi
-if [ $mu_key ];
+if [ !$mu_key ];
 then 
 	echo 'Please enter your Mu-api KEY:'
 	read mu_key
