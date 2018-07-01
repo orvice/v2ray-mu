@@ -63,8 +63,9 @@ wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/cleanLogs.s
 wget https://raw.githubusercontent.com/tonychanczm/easy-v2ray-mu/dev/catLogs.sh
 chmod +x *
 echo "30 4 * * * cd $(readlink -f .) && ./run.sh">> /var/spool/cron/root
-echo '-------------------------------'
-echo '|       Install finshed       |'
-echo '|      please run ./run.sh    |'
-echo '-------------------------------'
+echo '--------------------------------'
+echo '|       Install finshed        |'
+echo '|please run this command to run|'
+echo '----------- V  V  V ------------'
+echo "cd $(readlink -f .) && ./run.sh"
 
