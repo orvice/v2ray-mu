@@ -1,14 +1,26 @@
 #!/bin/bash
 clear
+mu_uri=$1
+mu_key=$2
+node_id=$3
 echo '-------------------------------'
 echo '|  Configuring Easy-V2ray-Mu  |'
 echo '-------------------------------'
-echo 'Please enter your Node ID:'
-read node_id
-echo 'Please enter your Mu-api URI(eg:http://www.xxxx.com/mu/v2):'
-read mu_uri
-echo 'Please enter your Mu-api KEY:'
-read mu_key
+if [ $node_id ];
+then 
+	echo 'Please enter your Node ID:'
+	read node_id
+fi
+if [ $mu_uri ];
+then 
+	echo 'Please enter your Mu-api URI(eg:http://www.xxxx.com/mu/v2):'
+	read mu_uri
+fi
+if [ $mu_key ];
+then 
+	echo 'Please enter your Mu-api KEY:'
+	read mu_key
+fi
 echo '-------------------------------'
 echo '|        Your Configure       |'
 echo '-------------------------------'
