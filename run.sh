@@ -43,6 +43,8 @@ export V2RAY_TAG=$V2RAY_TAG
 nohup $(readlink -f v2ray) --config=$(readlink -f cfg.json)>> /dev/null 2>&1 &
 nohup $(readlink -f v2mctl)>> /dev/null 2>&1 &
 
+sleep 1
+
 v2ray_pid=$(ps ux | grep "$(readlink -f v2ray)" | grep -v grep | awk '{print $2}')
 v2muctl_pid=$(ps ux | grep "$(readlink -f v2mctl)" | grep -v grep | awk '{print $2}')
 
