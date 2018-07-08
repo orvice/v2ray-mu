@@ -46,10 +46,10 @@ yum -y install vixie-cron
 yum install crontabs -y
 chkconfig --level 35 crond on
 service crond start
-wget https://github.com/v2ray/v2ray-core/releases/download/v3.27/v2ray-linux-64.zip
+wget https://github.com/v2ray/v2ray-core/releases/download/v3.29/v2ray-linux-64.zip
 unzip v2ray-linux-64.zip
 rm -rf v2ray-linux-64.zip
-mv v2ray-v3.27-linux-64 v2ray-mu
+mv v2ray-v3.29-linux-64 v2ray-mu
 cd v2ray-mu
 mkdir log
 touch log/error.log
