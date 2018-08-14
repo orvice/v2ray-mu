@@ -29,7 +29,7 @@ func (u *UserManager) check() error {
 
 func (u *UserManager) checkUser(user musdk.User) error {
 	var err error
-	if user.IsEnable() && !u.Exist(user) {
+	if user.IsEnable() {
 		logger.Infof("run user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 		// run user
 		err = u.vm.AddUser(&user.V2rayUser)
