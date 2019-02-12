@@ -2,27 +2,19 @@ package main
 
 import (
 	"fmt"
-	"github.com/orvice/kit/log"
+	"github.com/orvice/v2ray-mu/server"
+
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-var (
-	logger log.Logger
-)
-
-func init() {
-}
-
 func main() {
-	var err error
-	initCfg()
-	logger = log.NewFileLogger(cfg.LogPath)
+	server.Init()
 
-	InitWebApi()
+	server.InitWebApi()
 
-	um, err := NewUserManager()
+	um, err := server.NewUserManager()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)

@@ -1,31 +1,21 @@
-FROM golang:1.9 as builder
+FROM golang:1.11 as builder
 
-## Create a directory and Add Code
-RUN mkdir -p /go/src/github.com/orvice/v2ray-mu
-WORKDIR /go/src/github.com/orvice/v2ray-mu
-ADD .  /go/src/github.com/orvice/v2ray-mu
+ARG ARG_GOPROXY
+ENV GOPROXY $ARG_GOPROXY
 
-# Download and install any required third party dependencies into the container.
-RUN go-wrapper download
-# RUN go-wrapper install
-RUN CGO_ENABLED=0 go build
+WORKDIR /home/app
+COPY go.mod go.sum ./
 
-# EXPOSE 8300
+RUN go mod download
 
-# Now tell Docker what command to run when the container starts
-# CMD ["go-wrapper", "run"]
+COPY . .
+RUN make build
 
-FROM alpine
 
-COPY --from=builder /go/src/github.com/orvice/v2ray-mu/v2ray-mu .
+FROM orvice/go-runtime
 
-RUN apk update
-RUN apk upgrade
-RUN apk add ca-certificates && update-ca-certificates
-# Change TimeZone
-RUN apk add --update tzdata
-ENV TZ=Asia/Shanghai
-# Clean APK cache
-RUN rm -rf /var/cache/apk/*
+ENV PROJECT_NAME v2ray-mu
 
-ENTRYPOINT [ "./v2ray-mu" ]
+COPY --from=builder /home/app/bin/${PROJECT_NAME} .
+
+ENTRYPOINT "./v2ray-mu"
