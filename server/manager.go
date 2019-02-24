@@ -34,6 +34,9 @@ func (u *UserManager) checkUser(user musdk.User) error {
 		// run user
 		err = u.vm.AddUser(&user.V2rayUser)
 		if err != nil {
+			if IsAlreadyExistsError(err) {
+				return nil
+			}
 			logger.Errorf("add user %s error %v", user.V2rayUser.UUID, err)
 			return err
 		}
