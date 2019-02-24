@@ -11,14 +11,12 @@ build:
   stage: build
   image: docker
   script:
-    - export CI_BUILD_INFO=$(echo "build at:";date;echo " commit id and branch/tag ";echo $CI_COMMIT_SHA $CI_BUILD_REF_NAME)
     - export IMAGE_TAG=$(echo -en $CI_BUILD_REF_NAME | tr -c '[:alnum:]_.-' '-')
-    - export IMAGE_NAME=$(if [ -z ${CI_REGISTRY_IMAGE+x} ]; then echo hub.xbhost.com/lox/${CI_PROJECT_NAME}; else echo $CI_REGISTRY_IMAGE; fi)
-    - docker login -u "$CI_BUILD_USER"  -p "$CI_BUILD_TOKEN" $IMAGE_NAME
-    - docker build  -t "$IMAGE_NAME:$IMAGE_TAG"  --build-arg ARG_GOPROXY="$GOPROXY" .
-    - docker push "$IMAGE_NAME:$IMAGE_TAG"
-    - docker tag "$IMAGE_NAME:$IMAGE_TAG" "$IMAGE_NAME:latest"
-    - docker push "$IMAGE_NAME:latest"
+    - docker login -u "$CI_BUILD_USER"  -p "$CI_BUILD_TOKEN" $CI_REGISTRY
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
+    - docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+    - docker tag "$CI_REGISTRY_IMAGE:$IMAGE_TAG" "$CI_REGISTRY_IMAGE:latest"
+    - docker push "$CI_REGISTRY_IMAGE:latest"
 
 test:
   stage: test
