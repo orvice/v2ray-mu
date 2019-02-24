@@ -15,7 +15,7 @@ var (
 
 func Init() {
 	initCfg()
-	logger = log.NewDefaultLogger()
+	logger = log.NewFileLogger(cfg.LogPath)
 }
 
 func InitWebApi() {

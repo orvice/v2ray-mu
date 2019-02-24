@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/orvice/v2ray-mu/server"
-
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/orvice/v2ray-mu/server"
 )
 
 func main() {
