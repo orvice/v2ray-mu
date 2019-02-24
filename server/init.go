@@ -10,21 +10,23 @@ var (
 )
 
 var (
-	logger log.Logger
-	tl     log.Logger // traffic logger
+	logger    log.Logger
+	tl        log.Logger // traffic logger
+	sdkLogger log.Logger
 )
 
 func Init() {
 	initCfg()
 	logger = log.NewFileLogger(cfg.LogPath + "mu.log")
 	tl = log.NewFileLogger(cfg.LogPath + "traffic.log")
+	sdkLogger = log.NewFileLogger(cfg.LogPath + "sdk.log")
 }
 
 func InitWebApi() {
 	logger.Info("init mu api")
 	cfg := cfg.WebApi
 	apiClient = musdk.NewClient(cfg.Url, cfg.Token, cfg.NodeId, musdk.TypeV2ray)
-	apiClient.SetLogger(logger)
+	apiClient.SetLogger(sdkLogger)
 	go apiClient.UpdateTrafficDaemon()
 	return
 }
