@@ -11,11 +11,13 @@ var (
 
 var (
 	logger log.Logger
+	tl     log.Logger // traffic logger
 )
 
 func Init() {
 	initCfg()
-	logger = log.NewFileLogger(cfg.LogPath)
+	logger = log.NewFileLogger(cfg.LogPath + "mu.log")
+	tl = log.NewFileLogger(cfg.LogPath + "traffic.log")
 }
 
 func InitWebApi() {

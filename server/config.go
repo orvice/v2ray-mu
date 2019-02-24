@@ -40,5 +40,5 @@ func initCfg() {
 	cfg.SyncTime = time.Second * time.Duration(st)
 	cfg.V2rayClientAddr = env.Get("V2RAY_ADDR")
 	cfg.V2rayTag = env.Get("V2RAY_TAG")
-	cfg.LogPath = env.Get("LOG_PATH", "/var/log/v2ray-mu.log")
+	cfg.LogPath = env.Get("LOG_DIR", "/var/log/v2ray-mu/")
 }
