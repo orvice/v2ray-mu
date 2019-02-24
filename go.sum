@@ -63,6 +63,8 @@ github.com/orvice/kit v0.0.0-20190205134608-f08b97464b23 h1:0jzRKkwW8jCZn16AuCRs
 github.com/orvice/kit v0.0.0-20190205134608-f08b97464b23/go.mod h1:TFoUmysIltwv5RNbTlZtpn6BKD6JWq/ZCh9JTV0KxUI=
 github.com/orvice/kit v0.0.0-20190224072603-4cd40f3e9a07 h1:piDAglA5l51mvV2/gY/zK1qVJ1scw4bJnH81ArXS/0Q=
 github.com/orvice/kit v0.0.0-20190224072603-4cd40f3e9a07/go.mod h1:3tZ8BFpizCfBleN52/6arr6KQMYxu1e91S/a3bXc6HU=
+github.com/orvice/kit v0.0.0-20190224124836-1d905413b870 h1:rGJLgGgFZE/vLZSS4dS8c4eK0hAztfXuEvPA1cd3qPA=
+github.com/orvice/kit v0.0.0-20190224124836-1d905413b870/go.mod h1:3tZ8BFpizCfBleN52/6arr6KQMYxu1e91S/a3bXc6HU=
 github.com/orvice/shadowsocks-go v0.0.0-20160907161905-df93b5d1852a h1:PwfLk2SQswnNlMyXofRhqRPJeahgWS1oaOqFxtycEFo=
 github.com/orvice/shadowsocks-go v0.0.0-20160907161905-df93b5d1852a/go.mod h1:sFHnpyfFkJyeBf74AJFhORwW1hgJxKhxl3JbmXzM6J8=
 github.com/orvice/utils v0.0.0-20180715141935-5b71615d9c36 h1:AuGKyNjW6iAb+IGZbQFRPyjJjVR1o/vkCPZIXjOLU1k=
