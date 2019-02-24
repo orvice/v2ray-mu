@@ -64,23 +64,21 @@ func (u *UserManager) checkUser(user musdk.User) error {
 func (u *UserManager) restartUser() {}
 
 func (u *UserManager) Run() error {
-	for {
-		u.saveTrafficDaemon()
-		u.check()
-		time.Sleep(cfg.SyncTime)
-	}
+	runJob("check_users", cfg.SyncTime, u.check)
+	runJob("save_traffic", cfg.SyncTime, u.saveTrafficDaemon)
 	return nil
+
 }
 
 func (u *UserManager) Down() {
 	u.cancel()
 }
 
-func (u *UserManager) saveTrafficDaemon() {
-	logger.Infof("run save traffic daemon...")
+func (u *UserManager) saveTrafficDaemon() error {
 	u.usersMu.RLock()
 	defer u.usersMu.RUnlock()
 	for _, user := range u.users {
 		u.saveUserTraffic(user)
 	}
+	return nil
 }
