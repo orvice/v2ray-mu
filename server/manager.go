@@ -2,13 +2,13 @@ package server
 
 import (
 	"time"
-
 	"github.com/catpie/musdk-go"
 	"github.com/orvice/v2ray-manager"
 )
 
 func getV2rayManager() (*v2raymanager.Manager, error) {
 	vm, err := v2raymanager.NewManager(cfg.V2rayClientAddr, cfg.V2rayTag)
+	vm.SetLogger(logger)
 	return vm, err
 }
 
