@@ -75,6 +75,10 @@ github.com/orvice/v2ray-manager v0.0.0-20180406180440-33f928670756 h1:X2nN9W/vYL
 github.com/orvice/v2ray-manager v0.0.0-20180406180440-33f928670756/go.mod h1:UV7pgb7WVWpUHj8nDI9zxo9IcSmsKaQkJcTTqVFHE/Q=
 github.com/orvice/v2ray-manager v0.0.0-20190226150515-b601a3a280f3 h1:ld6jn+pw2kiNGruQWy51YxQHdZyyWj4V5rYVHZct0a8=
 github.com/orvice/v2ray-manager v0.0.0-20190226150515-b601a3a280f3/go.mod h1:zrufkeEqex6fbZ0RXIBwOQrp+3vi0FlYoSKGzy+kfyA=
+github.com/orvice/v2ray-manager v0.0.0-20190226151644-1f5236516a77 h1:SVE9jJ/vw66Y/whZ50vDdWDrDt6wwZG0Udl9mHWB1Q0=
+github.com/orvice/v2ray-manager v0.0.0-20190226151644-1f5236516a77/go.mod h1:zrufkeEqex6fbZ0RXIBwOQrp+3vi0FlYoSKGzy+kfyA=
+github.com/orvice/v2ray-manager v0.0.0-20190226151834-0c371533e708 h1:rXXHQxes42fmASrYQw//3zREB+4iUo70fqX0VetFqxs=
+github.com/orvice/v2ray-manager v0.0.0-20190226151834-0c371533e708/go.mod h1:zrufkeEqex6fbZ0RXIBwOQrp+3vi0FlYoSKGzy+kfyA=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
