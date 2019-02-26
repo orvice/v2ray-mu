@@ -7,7 +7,5 @@ require (
 	github.com/orvice/kit v0.0.0-20190224124836-1d905413b870
 	github.com/orvice/shadowsocks-go v0.0.0-20160907161905-df93b5d1852a // indirect
 	github.com/orvice/utils v0.0.0-20180715141935-5b71615d9c36
-	github.com/orvice/v2ray-manager v0.0.0-20180406180440-33f928670756
-	google.golang.org/grpc v1.18.0 // indirect
-	v2ray.com/core v4.15.0+incompatible // indirect
+	github.com/orvice/v2ray-manager v0.0.0-20190226150515-b601a3a280f3
 )
