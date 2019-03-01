@@ -1,9 +1,9 @@
 package server
 
 import (
-	"time"
 	"github.com/catpie/musdk-go"
 	"github.com/orvice/v2ray-manager"
+	"time"
 )
 
 func getV2rayManager() (*v2raymanager.Manager, error) {
@@ -31,12 +31,14 @@ func (u *UserManager) checkUser(user musdk.User) error {
 	var err error
 	if user.IsEnable() && !u.Exist(user) {
 		// run user
-		err = u.vm.AddUser(&user.V2rayUser)
+		exist, err := u.vm.AddUser(&user.V2rayUser)
 		if err != nil {
 			logger.Errorf("add user %s error %v", user.V2rayUser.UUID, err)
 			return err
 		}
-		logger.Infof("add user success %s", user.V2rayUser.UUID)
+		if !exist {
+			logger.Errorf("add user %s success", user.V2rayUser.UUID)
+		}
 		u.AddUser(user)
 		return nil
 	}

@@ -76,8 +76,8 @@ github.com/orvice/shadowsocks-go v0.0.0-20160907161905-df93b5d1852a h1:PwfLk2SQs
 github.com/orvice/shadowsocks-go v0.0.0-20160907161905-df93b5d1852a/go.mod h1:sFHnpyfFkJyeBf74AJFhORwW1hgJxKhxl3JbmXzM6J8=
 github.com/orvice/utils v0.0.0-20180715141935-5b71615d9c36 h1:AuGKyNjW6iAb+IGZbQFRPyjJjVR1o/vkCPZIXjOLU1k=
 github.com/orvice/utils v0.0.0-20180715141935-5b71615d9c36/go.mod h1:2WVdjh2swOycvNPtGpbP49+Idjavuop9pfYr8RytRfs=
-github.com/orvice/v2ray-manager v0.0.0-20190301150237-41d5eac040c3 h1:JpKa0/e4/F9sFefdkSQs+zWoGjiy/jU5BXpAoPOwzKU=
-github.com/orvice/v2ray-manager v0.0.0-20190301150237-41d5eac040c3/go.mod h1:zrufkeEqex6fbZ0RXIBwOQrp+3vi0FlYoSKGzy+kfyA=
+github.com/orvice/v2ray-manager v0.0.0-20190301151817-c649a5bb172d h1:OZ1HhQnYj1sD+BrNNsjuhFxbfslCUIcabGwta2pQ4MY=
+github.com/orvice/v2ray-manager v0.0.0-20190301151817-c649a5bb172d/go.mod h1:zrufkeEqex6fbZ0RXIBwOQrp+3vi0FlYoSKGzy+kfyA=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
