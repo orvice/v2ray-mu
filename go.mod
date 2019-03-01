@@ -7,5 +7,5 @@ require (
 	github.com/orvice/kit v0.0.0-20190224124836-1d905413b870
 	github.com/orvice/shadowsocks-go v0.0.0-20160907161905-df93b5d1852a // indirect
 	github.com/orvice/utils v0.0.0-20180715141935-5b71615d9c36
-	github.com/orvice/v2ray-manager v0.0.0-20190226151834-0c371533e708
+	github.com/orvice/v2ray-manager v0.0.0-20190301150237-41d5eac040c3
 )
