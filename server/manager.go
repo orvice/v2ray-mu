@@ -43,7 +43,7 @@ func (u *UserManager) checkUser(user musdk.User) error {
 		return nil
 	}
 
-	if !user.IsEnable() && u.Exist(user) {
+	if !user.IsEnable() && !u.Exist(user) {
 		logger.Infof("stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 		// stop user
 		err = u.vm.RemoveUser(&user.V2rayUser)
