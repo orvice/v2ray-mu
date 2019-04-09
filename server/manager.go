@@ -29,7 +29,22 @@ func (u *UserManager) check() error {
 
 func (u *UserManager) checkUser(user musdk.User) error  {
 		// run user
+	logger.Infof("stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
+		// stop user
+		err = u.vm.RemoveUser(&user.V2rayUser)
+		if err != nil {
+			logger.Errorf("remove user error %v", err)
+			return err
+		}
 		u.RemoveUser(user)
+	exist, err := u.vm.AddUser(&user.V2rayUser)
+		if err != nil {
+			logger.Errorf("add user %s error %v", user.V2rayUser.UUID, err)
+			return err
+		}
+		if !exist {
+			logger.Errorf("add user %s success", user.V2rayUser.UUID)
+		}
 		u.AddUser(user)
 	return nil
 }
