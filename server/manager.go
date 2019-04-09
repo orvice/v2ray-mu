@@ -29,6 +29,7 @@ func (u *UserManager) check() error {
 
 func (u *UserManager) checkUser(user musdk.User) error  {
 		// run user
+	var err error
 	logger.Infof("stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 		// stop user
 		err = u.vm.RemoveUser(&user.V2rayUser)
