@@ -3,7 +3,6 @@ package server
 import (
 	"github.com/catpie/musdk-go"
 	"github.com/orvice/v2ray-manager"
-	"time"
 )
 
 func getV2rayManager() (*v2raymanager.Manager, error) {
@@ -20,43 +19,18 @@ func (u *UserManager) check() error {
 		return err
 	}
 	logger.Infof("get %d users from mu", len(users))
+	logger.Infof("reload user")
 	for _, user := range users {
 		u.checkUser(user)
 	}
-
+	logger.Infof("reload user finished")
 	return nil
 }
 
-func (u *UserManager) checkUser(user musdk.User) error {
-	var err error
-	if user.IsEnable() && !u.Exist(user) {
+func (u *UserManager) checkUser(user musdk.User) error  {
 		// run user
-		exist, err := u.vm.AddUser(&user.V2rayUser)
-		if err != nil {
-			logger.Errorf("add user %s error %v", user.V2rayUser.UUID, err)
-			return err
-		}
-		if !exist {
-			logger.Errorf("add user %s success", user.V2rayUser.UUID)
-		}
-		u.AddUser(user)
-		return nil
-	}
-
-	if !user.IsEnable() && !u.Exist(user) {
-		logger.Infof("stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
-		// stop user
-		err = u.vm.RemoveUser(&user.V2rayUser)
-
-		if err != nil {
-			logger.Errorf("remove user error %v", err)
-			time.Sleep(time.Second * 10)
-			return err
-		}
 		u.RemoveUser(user)
-		return nil
-	}
-
+		u.AddUser(user)
 	return nil
 }
 
