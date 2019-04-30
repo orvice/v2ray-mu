@@ -17,7 +17,7 @@ type Config struct {
 
 	V2rayClientAddr string
 	V2rayTag        string
-
+	MaxTraffic	int
 	LogPath string
 }
 
@@ -40,5 +40,6 @@ func initCfg() {
 	cfg.SyncTime = time.Second * time.Duration(st)
 	cfg.V2rayClientAddr = env.Get("V2RAY_ADDR")
 	cfg.V2rayTag = env.Get("V2RAY_TAG")
+	cfg.MaxTraffic = env.GetInt("MAXTRAFFIC")
 	cfg.LogPath = env.Get("LOG_DIR", "/var/log/v2ray-mu/")
 }
