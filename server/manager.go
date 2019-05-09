@@ -33,8 +33,17 @@ func (u *UserManager) checkUser(user musdk.User) error  {
 	traffic = user.U + user.D
 	u.RemoveUser(user)
 		if ( traffic < maxtraffic ) && user.IsEnable() {
-			u.AddUser(user)
 			logger.Infof("user %s is valid, current %v GiB, will be add to v2ray.", user.V2rayUser.Email, int(traffic/1024/1024/1024))
+			var err error
+			exist, err := u.vm.AddUser(&user.V2rayUser)
+			if err != nil {
+				logger.Errorf("add user %s uuid %s error %v", user.V2rayUser.Email, user.V2rayUser.UUID, err)
+			return err
+			}
+			if !exist {
+				logger.Errorf("add user %s uuid %s success", user.V2rayUser.Email, user.V2rayUser.UUID)
+				}
+			u.AddUser(user)
 		} else {
 			logger.Infof("user %s is overusage, current %v GiB, will not add to v2ray.", user.V2rayUser.Email, int(traffic/1024/1024/1024))
 		}
