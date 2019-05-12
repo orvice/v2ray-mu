@@ -31,6 +31,7 @@ func (u *UserManager) checkUser(user musdk.User) error  {
 	var traffic, maxtraffic int64
 	maxtraffic = int64(cfg.MaxTraffic) * 1024 * 1024 * 1024
 	traffic = user.U + user.D
+	u.vm.RemoveUser(&user.V2rayUser)
 	u.RemoveUser(user)
 		if ( traffic < maxtraffic ) && user.IsEnable() {
 			logger.Infof("user %s is valid, current %v GiB, will be add to v2ray.", user.V2rayUser.Email, int(traffic/1024/1024/1024))
