@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/catpie/musdk-go"
+	"github.com/shuangzhijinghua/musdk-go"
 	"github.com/orvice/kit/log"
 )
 

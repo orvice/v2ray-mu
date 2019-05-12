@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/catpie/musdk-go"
+	"github.com/shuangzhijinghua/musdk-go"
 	"github.com/orvice/v2ray-manager"
 )
 
@@ -10,7 +10,6 @@ func getV2rayManager() (*v2raymanager.Manager, error) {
 	vm.SetLogger(logger)
 	return vm, err
 }
-
 func (u *UserManager) check() error {
 	logger.Info("check users from mu")
 	users, err := apiClient.GetUsers()
@@ -19,11 +18,9 @@ func (u *UserManager) check() error {
 		return err
 	}
 	logger.Infof("get %d users from mu", len(users))
-	logger.Infof("reload user")
 	for _, user := range users {
 		u.checkUser(user)
 	}
-	logger.Infof("reload user finished")
 	return nil
 }
 
@@ -31,23 +28,26 @@ func (u *UserManager) checkUser(user musdk.User) error  {
 	var traffic, maxtraffic int64
 	maxtraffic = int64(cfg.MaxTraffic) * 1024 * 1024 * 1024
 	traffic = user.U + user.D
-	u.vm.RemoveUser(&user.V2rayUser)
-	u.RemoveUser(user)
-		if ( traffic < maxtraffic ) && user.IsEnable() {
-			logger.Infof("user %s is valid, current %v GiB, will be add to v2ray.", user.V2rayUser.Email, int(traffic/1024/1024/1024))
-			var err error
-			exist, err := u.vm.AddUser(&user.V2rayUser)
-			if err != nil {
-				logger.Errorf("add user %s uuid %s error %v", user.V2rayUser.Email, user.V2rayUser.UUID, err)
-			return err
-			}
-			if !exist {
-				logger.Errorf("add user %s uuid %s success", user.V2rayUser.Email, user.V2rayUser.UUID)
-				}
-			u.AddUser(user)
-		} else {
-			logger.Infof("user %s is overusage, current %v GiB, will not add to v2ray.", user.V2rayUser.Email, int(traffic/1024/1024/1024))
-		}
+	if ( traffic >= maxtraffic ) && u.Exist(user){
+		u.vm.RemoveUser(&user.V2rayUser)
+		u.RemoveUser(user)
+	} else if !u.UserDiff(user) {
+		logger.Infof("user id %d email %s uuid %s  is different with previous one,reloading.", user.Id, user.V2rayUser.Email, user.V2rayUser.UUID)
+		u.vm.RemoveUser(&user.V2rayUser)
+		u.RemoveUser(user)
+	}
+
+	if ( traffic < maxtraffic ) && user.IsEnable() && !u.Exist(user) {
+		logger.Infof("user %s is valid, current %v GiB, will be add to v2ray.", user.V2rayUser.Email, int(traffic/1024/1024/1024))
+		u.vm.AddUser(&user.V2rayUser)
+		u.AddUser(user)
+	} else if user.Admin() {
+		logger.Infof("user %d is admin, add anyway.",user.Id)
+		u.vm.AddUser(&user.V2rayUser)
+		u.AddUser(user)
+	} else if ( traffic >= maxtraffic) {
+		logger.Infof("user %s is overusage, current %v GiB, will not add to v2ray.", user.V2rayUser.Email, int(traffic/1024/1024/1024))
+	}
 	return nil
 }
 
