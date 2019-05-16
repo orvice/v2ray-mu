@@ -2,7 +2,9 @@ package server
 
 import (
 	"github.com/catpie/musdk-go"
-	"github.com/orvice/kit/log"
+	"github.com/weeon/contract"
+	"github.com/weeon/log"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
@@ -10,16 +12,16 @@ var (
 )
 
 var (
-	logger    log.Logger
-	tl        log.Logger // traffic logger
-	sdkLogger log.Logger
+	logger    contract.Logger
+	tl        contract.Logger // traffic logger
+	sdkLogger contract.Logger
 )
 
 func Init() {
 	initCfg()
-	logger = log.NewFileLogger(cfg.LogPath + "mu.log")
-	tl = log.NewFileLogger(cfg.LogPath + "traffic.log")
-	sdkLogger = log.NewFileLogger(cfg.LogPath + "sdk.log")
+	logger, _ = log.NewLogger(cfg.LogPath+"mu.log", zapcore.DebugLevel)
+	tl, _ = log.NewLogger(cfg.LogPath+"traffic.log", zapcore.DebugLevel)
+	sdkLogger, _ = log.NewLogger(cfg.LogPath+"sdk.log", zapcore.DebugLevel)
 }
 
 func InitWebApi() {

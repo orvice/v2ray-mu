@@ -70,6 +70,10 @@ func (u *UserManager) saveUserTraffic(user musdk.User) {
 		U:      ti.Up,
 		D:      ti.Down,
 	}
-	tl.Infof("id %d uuid %s save traffice log %v", user.Id, user.V2rayUser.UUID, trafficLog)
+	tl.Infow("save traffice log",
+		"user_id", user.Id,
+		"uuid", user.V2rayUser.UUID,
+		"traffic Log", trafficLog,
+	)
 	apiClient.SaveTrafficLog(trafficLog)
 }
