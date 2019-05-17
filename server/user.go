@@ -40,15 +40,13 @@ func NewUserManager() (*UserManager, error) {
 func (u *UserManager) UserDiff(user musdk.User) bool {
 	olduser := u.oldusers[user.Id]
 	newuser := user.V2rayUser.UUID
-	if ( olduser.V2rayUser.UUID == newuser ) {
+	if ( olduser.V2rayUser.UUID != newuser ) {
 		u.oldusersMu.Lock()
 		delete(u.oldusers, user.Id)
 		u.oldusersMu.Unlock()
-		return true
-	} else if ( olduser.V2rayUser.UUID == "" ) {
-		return true
+		return false
 	}
-	return false
+	return true
 }
 
 func (u *UserManager) AddUser(user musdk.User) {

@@ -28,10 +28,13 @@ func (u *UserManager) checkUser(user musdk.User) error  {
 	var traffic, maxtraffic int64
 	maxtraffic = int64(cfg.MaxTraffic) * 1024 * 1024 * 1024
 	traffic = user.U + user.D
-	if ( traffic >= maxtraffic ) && u.Exist(user){
+	if ( traffic >= maxtraffic ) && !user.Admin() && u.Exist(user){
 		u.vm.RemoveUser(&user.V2rayUser)
 		u.RemoveUser(user)
-	} else if !u.UserDiff(user) {
+	} else if ( user.GetClass() < 2 ) && !user.Admin() && u.Exist(user) {
+		u.vm.RemoveUser(&user.V2rayUser)
+		u.RemoveUser(user)
+	} else if !u.UserDiff(user) && u.Exist(user) {
 		logger.Infof("user id %d email %s uuid %s  is different with previous one,reloading.", user.Id, user.V2rayUser.Email, user.V2rayUser.UUID)
 		u.vm.RemoveUser(&user.V2rayUser)
 		u.RemoveUser(user)
@@ -41,12 +44,10 @@ func (u *UserManager) checkUser(user musdk.User) error  {
 		logger.Infof("user %s is valid, current %v GiB, will be add to v2ray.", user.V2rayUser.Email, int(traffic/1024/1024/1024))
 		u.vm.AddUser(&user.V2rayUser)
 		u.AddUser(user)
-	} else if user.Admin() {
+	} else if user.Admin() && !u.Exist(user) {
 		logger.Infof("user %d is admin, add anyway.",user.Id)
 		u.vm.AddUser(&user.V2rayUser)
 		u.AddUser(user)
-	} else if ( traffic >= maxtraffic) {
-		logger.Infof("user %s is overusage, current %v GiB, will not add to v2ray.", user.V2rayUser.Email, int(traffic/1024/1024/1024))
 	}
 	return nil
 }
