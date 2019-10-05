@@ -1,9 +1,11 @@
 package server
 
 import (
-	"github.com/catpie/musdk-go"
-	"github.com/orvice/v2ray-manager"
 	"time"
+
+	"github.com/catpie/musdk-go"
+	v2raymanager "github.com/orvice/v2ray-manager"
+	"github.com/weeon/utils/task"
 )
 
 func getV2rayManager() (*v2raymanager.Manager, error) {
@@ -64,8 +66,8 @@ func (u *UserManager) checkUser(user musdk.User) error {
 func (u *UserManager) restartUser() {}
 
 func (u *UserManager) Run() error {
-	runJob("check_users", cfg.SyncTime, u.check)
-	runJob("save_traffic", cfg.SyncTime, u.saveTrafficDaemon)
+	task.NewTaskAndRun("check_users", cfg.SyncTime, u.check)
+	task.NewTaskAndRun("save_traffic", cfg.SyncTime, u.saveTrafficDaemon)
 	return nil
 
 }
