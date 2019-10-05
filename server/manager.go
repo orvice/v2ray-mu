@@ -66,8 +66,8 @@ func (u *UserManager) checkUser(user musdk.User) error {
 func (u *UserManager) restartUser() {}
 
 func (u *UserManager) Run() error {
-	task.NewTaskAndRun("check_users", cfg.SyncTime, u.check)
-	task.NewTaskAndRun("save_traffic", cfg.SyncTime, u.saveTrafficDaemon)
+	task.NewTaskAndRun("check_users", cfg.SyncTime, u.check, task.SetTaskLogger(sdkLogger))
+	task.NewTaskAndRun("save_traffic", cfg.SyncTime, u.saveTrafficDaemon, task.SetTaskLogger(sdkLogger))
 	return nil
 
 }

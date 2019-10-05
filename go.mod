@@ -9,7 +9,7 @@ require (
 	github.com/orvice/v2ray-manager v0.0.0-20190516093201-c0c671562a60
 	github.com/weeon/contract v0.0.0-20190510071243-5d5297a1e668
 	github.com/weeon/log v0.0.0-20190511172212-4e2e3b6771fe
-	github.com/weeon/utils v0.0.0-20190516093336-c1ee61728288
+	github.com/weeon/utils v0.0.0-20190811163854-1e1c3f458835
 	go.uber.org/zap v1.10.0
 	google.golang.org/genproto v0.0.0-20180831171423-11092d34479b // indirect
 )

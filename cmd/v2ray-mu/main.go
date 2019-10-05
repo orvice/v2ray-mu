@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/orvice/v2ray-mu/server"
+	"github.com/weeon/utils/process"
 )
 
 func main() {
@@ -22,8 +21,5 @@ func main() {
 
 	go um.Run()
 
-	osSignals := make(chan os.Signal, 1)
-	signal.Notify(osSignals, os.Interrupt, os.Kill, syscall.SIGTERM)
-
-	<-osSignals
+	process.WaitSignal()
 }
