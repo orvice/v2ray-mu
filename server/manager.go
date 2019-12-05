@@ -24,7 +24,10 @@ func (u *UserManager) check() error {
 	}
 	logger.Infof("get %d users from mu", len(users))
 	for _, user := range users {
-		u.checkUser(user)
+		err := u.checkUser(user)
+		if err != nil {
+			logger.Errorf("check user(id=%d) fail", user.GetId())
+		}
 	}
 
 	return nil
