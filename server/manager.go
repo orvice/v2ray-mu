@@ -23,10 +23,32 @@ func (u *UserManager) check() error {
 		return err
 	}
 	logger.Infof("get %d users from mu", len(users))
+
+	apiUserMap := make(map[int64]bool)
+	// update users
 	for _, user := range users {
 		err := u.checkUser(user)
 		if err != nil {
 			logger.Errorf("check user(id=%d) fail", user.GetId())
+		}
+		apiUserMap[user.GetId()] = true
+	}
+
+	// sync users
+	if len(users) != len(u.GetUsers()) {
+		for uid, user := range u.GetUsers() {
+			_, ok := apiUserMap[uid]
+			if !ok {
+				logger.Infof("user(id=%d) no longer exists in mu system, removing it", uid)
+				// user no longer exists in mu system, remove it
+				err = u.vm.RemoveUser(&user.V2rayUser)
+				if err != nil {
+					logger.Errorf("remove user error %v", err)
+					time.Sleep(time.Second * 10)
+					return err
+				}
+				u.RemoveUser(user)
+			}
 		}
 	}
 

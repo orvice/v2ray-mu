@@ -50,6 +50,10 @@ func (u *UserManager) GetUser(id int64) (musdk.User, bool) {
 	return user, ok
 }
 
+func (u *UserManager) GetUsers() map[int64]musdk.User {
+	return u.users
+}
+
 func (u *UserManager) Exist(user musdk.User) bool {
 	u.usersMu.RLock()
 	defer u.usersMu.RUnlock()
