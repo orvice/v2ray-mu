@@ -19,7 +19,9 @@ func main() {
 		os.Exit(0)
 	}
 
-	go um.Run()
+	for _, v := range um {
+		go v.Run()
+	}
 
 	process.WaitSignal()
 }

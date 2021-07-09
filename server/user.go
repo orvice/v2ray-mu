@@ -17,20 +17,23 @@ type UserManager struct {
 	vm *v2raymanager.Manager
 }
 
-func NewUserManager() (*UserManager, error) {
+func NewUserManager() ([]*UserManager, error) {
 	ctx, cancel := context.WithCancel(context.Background())
-	vm, err := getV2rayManager()
+	vms, err := getV2rayManager()
 	if err != nil {
 		return nil, err
 	}
-	um := &UserManager{
-		users:   make(map[int64]musdk.User),
-		usersMu: new(sync.RWMutex),
-		ctx:     ctx,
-		cancel:  cancel,
-		vm:      vm,
+	ums := make([]*UserManager, len(vms))
+	for k, v := range vms {
+		ums[k] = &UserManager{
+			users:   make(map[int64]musdk.User),
+			usersMu: new(sync.RWMutex),
+			ctx:     ctx,
+			cancel:  cancel,
+			vm:      v,
+		}
 	}
-	return um, nil
+	return ums, nil
 }
 
 func (u *UserManager) AddUser(user musdk.User) {

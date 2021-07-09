@@ -1,6 +1,7 @@
 package server
 
 import (
+	"strings"
 	"time"
 
 	"github.com/catpie/musdk-go"
@@ -8,9 +9,18 @@ import (
 	"github.com/weeon/utils/task"
 )
 
-func getV2rayManager() (*v2raymanager.Manager, error) {
-	vm, err := v2raymanager.NewManager(cfg.V2rayClientAddr, cfg.V2rayTag, sdkLogger)
-	return vm, err
+func getV2rayManager() ([]*v2raymanager.Manager, error) {
+	arr := strings.Split(cfg.V2rayClientAddr, ",")
+	var vms = make([]*v2raymanager.Manager, len(arr))
+	for k, v := range arr {
+		vm, err := v2raymanager.NewManager(v, cfg.V2rayTag, sdkLogger)
+		if err != nil {
+			return nil, err
+		}
+		vms[k] = vm
+	}
+
+	return vms, nil
 }
 
 func (u *UserManager) check() error {
