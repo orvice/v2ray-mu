@@ -8,10 +8,10 @@ require (
 	github.com/orvice/shadowsocks-go v0.0.0-20160907161905-df93b5d1852a // indirect
 	github.com/orvice/utils v0.0.0-20180715141935-5b71615d9c36
 	github.com/orvice/v2ray-manager v0.0.0-20190516093201-c0c671562a60
-	github.com/weeon/contract v0.0.0-20190510071243-5d5297a1e668
-	github.com/weeon/log v0.0.0-20190511172212-4e2e3b6771fe
-	github.com/weeon/utils v0.0.0-20190811163854-1e1c3f458835
-	go.uber.org/zap v1.10.0
+	github.com/weeon/contract v0.0.0-20190520152601-a4ee53bdb563
+	github.com/weeon/log v0.0.0-20210217051817-63fe9a730962
+	github.com/weeon/utils v0.0.0-20191006141126-776357ea6f99
+	go.uber.org/zap v1.15.0
 	google.golang.org/protobuf v1.27.1 // indirect
 	v2ray.com/core v4.19.1+incompatible // indirect
 )
