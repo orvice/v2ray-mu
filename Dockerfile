@@ -1,4 +1,4 @@
-FROM golang:1.16 as builder
+FROM quay.io/bitnami/golang:1.16 as builder
 
 ARG ARG_GOPROXY
 ENV GOPROXY $ARG_GOPROXY
