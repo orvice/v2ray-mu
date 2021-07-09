@@ -12,10 +12,8 @@ COPY . .
 RUN make build
 
 
-FROM orvice/go-runtime
+FROM quay.io/orvice/go-runtime:latest
 
 ENV PROJECT_NAME v2ray-mu
 
 COPY --from=builder /home/app/bin/${PROJECT_NAME} .
-
-ENTRYPOINT "./v2ray-mu"
