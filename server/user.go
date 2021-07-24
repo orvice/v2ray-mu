@@ -63,8 +63,8 @@ func (u *UserManager) Exist(user musdk.User) bool {
 	return false
 }
 
-func (u *UserManager) saveUserTraffic(user musdk.User) {
-	ti := u.vm.GetTrafficAndReset(&user.V2rayUser)
+func (u *UserManager) saveUserTraffic(ctx context.Context, user musdk.User) {
+	ti := u.vm.GetTrafficAndReset(ctx, &user.V2rayUser)
 	if ti.Down == 0 && ti.Up == 0 {
 		return
 	}

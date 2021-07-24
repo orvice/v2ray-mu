@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"strings"
 	"time"
 
@@ -24,6 +25,7 @@ func getV2rayManager() ([]*v2raymanager.Manager, error) {
 }
 
 func (u *UserManager) check() error {
+	ctx := context.Background()
 	logger.Info("check users from mu")
 	users, err := apiClient.GetUsers()
 	if err != nil {
@@ -34,17 +36,17 @@ func (u *UserManager) check() error {
 	}
 	logger.Infof("get %d users from mu", len(users))
 	for _, user := range users {
-		u.checkUser(user)
+		u.checkUser(ctx, user)
 	}
 
 	return nil
 }
 
-func (u *UserManager) checkUser(user musdk.User) error {
+func (u *UserManager) checkUser(ctx context.Context, user musdk.User) error {
 	var err error
 	if user.IsEnable() && !u.Exist(user) {
 		// run user
-		exist, err := u.vm.AddUser(&user.V2rayUser)
+		exist, err := u.vm.AddUser(ctx, &user.V2rayUser)
 		if err != nil {
 			logger.Errorf("add user %s error %v", user.V2rayUser.UUID, err)
 			return err
@@ -59,7 +61,7 @@ func (u *UserManager) checkUser(user musdk.User) error {
 	if !user.IsEnable() && u.Exist(user) {
 		logger.Infof("stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 		// stop user
-		err = u.vm.RemoveUser(&user.V2rayUser)
+		err = u.vm.RemoveUser(ctx, &user.V2rayUser)
 
 		if err != nil {
 			logger.Errorf("remove user error %v", err)
@@ -87,10 +89,11 @@ func (u *UserManager) Down() {
 }
 
 func (u *UserManager) saveTrafficDaemon() error {
+	ctx := context.Background()
 	u.usersMu.RLock()
 	defer u.usersMu.RUnlock()
 	for _, user := range u.users {
-		u.saveUserTraffic(user)
+		u.saveUserTraffic(ctx, user)
 	}
 	return nil
 }

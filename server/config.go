@@ -3,7 +3,7 @@ package server
 import (
 	"time"
 
-	"github.com/orvice/utils/env"
+	"github.com/weeon/utils"
 )
 
 var (
@@ -32,13 +32,13 @@ type WebApiCfg struct {
 
 func initCfg() {
 	cfg.WebApi = WebApiCfg{
-		Url:    env.Get("MU_URI"),
-		Token:  env.Get("MU_TOKEN"),
-		NodeId: env.GetInt("MU_NODE_ID"),
+		Url:    utils.GetEnv("MU_URI"),
+		Token:  utils.GetEnv("MU_TOKEN"),
+		NodeId: utils.GetEnvInt("MU_NODE_ID"),
 	}
-	st := env.GetInt("SYNC_TIME", 60)
+	st := utils.GetEnvInt("SYNC_TIME", 60)
 	cfg.SyncTime = time.Second * time.Duration(st)
-	cfg.V2rayClientAddr = env.Get("V2RAY_ADDR")
-	cfg.V2rayTag = env.Get("V2RAY_TAG")
-	cfg.LogPath = env.Get("LOG_DIR", "/var/log/v2ray-mu/")
+	cfg.V2rayClientAddr = utils.GetEnv("V2RAY_ADDR")
+	cfg.V2rayTag = utils.GetEnv("V2RAY_TAG")
+	cfg.LogPath = utils.GetEnv("LOG_DIR", "/var/log/v2ray-mu/")
 }
