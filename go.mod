@@ -7,7 +7,6 @@ require (
 	github.com/weeon/log v0.0.0-20210217051817-63fe9a730962
 	github.com/weeon/utils v0.0.0-20210724174708-113b40b2e152
 	go.uber.org/zap v1.18.1
-	google.golang.org/protobuf v1.27.1 // indirect
 )
 
 go 1.16
