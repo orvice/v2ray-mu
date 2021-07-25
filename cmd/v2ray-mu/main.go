@@ -20,7 +20,9 @@ func main() {
 	}
 
 	for _, v := range um {
-		go v.Run()
+		go func(v *server.UserManager) {
+			_ = v.Run()
+		}(v)
 	}
 
 	process.WaitSignal()
