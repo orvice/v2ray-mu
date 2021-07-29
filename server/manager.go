@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/catpie/musdk-go"
 	v2raymanager "github.com/orvice/v2ray-manager"
-	"github.com/weeon/log"
 	"github.com/weeon/utils/task"
 	"strings"
 )
@@ -55,12 +54,12 @@ func (u *UserManager) check() error {
 	for _, v := range v2Users {
 		uu, ok := apiUsersMap[v.User.GetUUID()]
 		if !ok {
-			log.Infof("v2 user not in api, %s should be removed", v.User.GetUUID())
+			logger.Infof("v2 user not in api, %s should be removed", v.User.GetUUID())
 			u.vm.RemoveUser(ctx, v.User)
 		}
 
 		if uu.Enable == 0 {
-			log.Infof("user %s is disable, should be removed", v.User.GetUUID())
+			logger.Infof("user %s is disable, should be removed", v.User.GetUUID())
 			u.vm.RemoveUser(ctx, v.User)
 		}
 
@@ -74,7 +73,7 @@ func (u *UserManager) check() error {
 
 		_, ok := v2UsersMap[v.V2rayUser.UUID]
 		if !ok {
-			log.Infof("user %s may be should be add", v.V2rayUser.UUID)
+			logger.Infof("user %s may be should be add", v.V2rayUser.UUID)
 			u.addUser(ctx, &v.V2rayUser)
 		}
 	}
