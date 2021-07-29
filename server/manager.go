@@ -80,6 +80,8 @@ func (u *UserManager) check() error {
 
 	var logCount int
 
+	logger.Infof("start v2 user data check len %d", len(v2Users))
+
 	for _, vv := range v2Users {
 
 		apiU, ok := apiUsersMap[vv.User.GetUUID()]
