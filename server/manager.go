@@ -2,12 +2,10 @@ package server
 
 import (
 	"context"
-	"strings"
-	"time"
-
 	"github.com/catpie/musdk-go"
 	v2raymanager "github.com/orvice/v2ray-manager"
 	"github.com/weeon/utils/task"
+	"strings"
 )
 
 func getV2rayManager() ([]*v2raymanager.Manager, error) {
@@ -35,65 +33,106 @@ func (u *UserManager) check() error {
 		return err
 	}
 	logger.Infof("get %d users from mu", len(users))
+
+	v2Users, err := u.vm.GetUserList(ctx, true)
+	if err != nil {
+		logger.Errorw("get users list error",
+			"error", err.Error())
+	}
+
+	apiUsersMap := make(map[string]musdk.User)
+	v2UsersMap := make(map[string]v2raymanager.User)
+
 	for _, user := range users {
-		u.checkUser(ctx, user)
+		logger.Debugf("api users map add %s", user.V2rayUser.UUID)
+		apiUsersMap[user.V2rayUser.UUID] = user
 	}
+	for _, user := range v2Users {
+		v2UsersMap[user.User.GetUUID()] = user.User
+	}
+
+	// check remove user
+	for _, v := range v2Users {
+		uu, ok := apiUsersMap[v.User.GetUUID()]
+		if !ok {
+			logger.Infof("v2 user not in api, %s should be removed", v.User.GetUUID())
+			u.vm.RemoveUser(ctx, v.User)
+		}
+
+		if uu.Enable == 0 {
+			logger.Infof("user %s is disable, should be removed", v.User.GetUUID())
+			u.vm.RemoveUser(ctx, v.User)
+		}
+
+	}
+
+	// check add
+	for _, v := range users {
+		if v.Enable == 0 {
+			continue
+		}
+
+		_, ok := v2UsersMap[v.V2rayUser.UUID]
+		if !ok {
+			logger.Infof("user %s may be should be add", v.V2rayUser.UUID)
+			u.addUser(ctx, &v.V2rayUser)
+		}
+	}
+
+	var logCount int
+
+	logger.Infof("start v2 user data check len %d", len(v2Users))
+
+	for _, vv := range v2Users {
+
+		apiU, ok := apiUsersMap[vv.User.GetUUID()]
+		if !ok {
+			logger.Infof("%s is not found in api users ", vv.User.GetUUID())
+			continue
+		}
+
+		if vv.TrafficInfo.Up == 0 && vv.TrafficInfo.Down == 0 {
+			continue
+		}
+
+		logCount++
+
+		trafficLog := musdk.UserTrafficLog{
+			UserId: apiU.Id,
+			U:      vv.TrafficInfo.Up,
+			D:      vv.TrafficInfo.Down,
+		}
+		tl.Infow("save traffice log",
+			"user_id", apiU.Id,
+			"uuid", vv.User.GetUUID(),
+			"traffic Log", trafficLog,
+		)
+		apiClient.SaveTrafficLog(trafficLog)
+	}
+
+	logger.Infof("finish traffic log post len %d", logCount)
 
 	return nil
 }
 
-func (u *UserManager) checkUser(ctx context.Context, user musdk.User) error {
-	var err error
-	if user.IsEnable() && !u.Exist(user) {
-		// run user
-		exist, err := u.vm.AddUser(ctx, &user.V2rayUser)
-		if err != nil {
-			logger.Errorf("add user %s error %v", user.V2rayUser.UUID, err)
-			return err
-		}
-		if !exist {
-			logger.Errorf("add user %s success", user.V2rayUser.UUID)
-		}
-		u.AddUser(user)
-		return nil
+func (u *UserManager) addUser(ctx context.Context, user v2raymanager.User) {
+	exist, err := u.vm.AddUser(ctx, user)
+	if err != nil {
+		logger.Errorf("add user %s error %v", user.GetUUID(), err)
+		return
 	}
-
-	if !user.IsEnable() && u.Exist(user) {
-		logger.Infof("stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
-		// stop user
-		err = u.vm.RemoveUser(ctx, &user.V2rayUser)
-
-		if err != nil {
-			logger.Errorf("remove user error %v", err)
-			time.Sleep(time.Second * 10)
-			return err
-		}
-		u.RemoveUser(user)
-		return nil
+	if !exist {
+		logger.Errorf("add user %s success", user.GetUUID())
 	}
-
-	return nil
+	return
 }
-
-func (u *UserManager) restartUser() {}
 
 func (u *UserManager) Run() error {
 	task.NewTaskAndRun("check_users", cfg.SyncTime, u.check, task.SetTaskLogger(sdkLogger))
-	task.NewTaskAndRun("save_traffic", cfg.SyncTime, u.saveTrafficDaemon, task.SetTaskLogger(sdkLogger))
 	return nil
 
 }
 
 func (u *UserManager) Down() {
 	u.cancel()
-}
-
-func (u *UserManager) saveTrafficDaemon() error {
-	ctx := context.Background()
-	u.usersMu.RLock()
-	defer u.usersMu.RUnlock()
-	for _, user := range u.users {
-		u.saveUserTraffic(ctx, user)
-	}
-	return nil
 }

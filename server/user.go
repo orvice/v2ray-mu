@@ -36,47 +36,7 @@ func NewUserManager() ([]*UserManager, error) {
 	return ums, nil
 }
 
-func (u *UserManager) AddUser(user musdk.User) {
-	u.usersMu.Lock()
-	u.users[user.Id] = user
-	u.usersMu.Unlock()
-}
-
-func (u *UserManager) RemoveUser(user musdk.User) {
-	u.usersMu.Lock()
-	delete(u.users, user.Id)
-	u.usersMu.Unlock()
-}
-
 func (u *UserManager) GetUser(id int64) (musdk.User, bool) {
 	user, ok := u.users[id]
 	return user, ok
-}
-
-func (u *UserManager) Exist(user musdk.User) bool {
-	u.usersMu.RLock()
-	defer u.usersMu.RUnlock()
-	_, ok := u.users[user.Id]
-	if ok {
-		return true
-	}
-	return false
-}
-
-func (u *UserManager) saveUserTraffic(ctx context.Context, user musdk.User) {
-	ti := u.vm.GetTrafficAndReset(ctx, &user.V2rayUser)
-	if ti.Down == 0 && ti.Up == 0 {
-		return
-	}
-	trafficLog := musdk.UserTrafficLog{
-		UserId: user.Id,
-		U:      ti.Up,
-		D:      ti.Down,
-	}
-	tl.Infow("save traffice log",
-		"user_id", user.Id,
-		"uuid", user.V2rayUser.UUID,
-		"traffic Log", trafficLog,
-	)
-	apiClient.SaveTrafficLog(trafficLog)
 }
