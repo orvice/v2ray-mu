@@ -78,12 +78,20 @@ func (u *UserManager) check() error {
 		}
 	}
 
+	var logCount int
+
 	for _, vv := range v2Users {
 
 		apiU, ok := apiUsersMap[vv.User.GetUUID()]
 		if ok {
 			continue
 		}
+
+		if vv.TrafficInfo.Up == 0 && vv.TrafficInfo.Down == 0 {
+			continue
+		}
+
+		logCount++
 
 		trafficLog := musdk.UserTrafficLog{
 			UserId: apiU.Id,
@@ -97,6 +105,8 @@ func (u *UserManager) check() error {
 		)
 		apiClient.SaveTrafficLog(trafficLog)
 	}
+
+	logger.Infof("finish traffic log post len %d", logCount)
 
 	return nil
 }
