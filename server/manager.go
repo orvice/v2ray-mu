@@ -86,7 +86,7 @@ func (u *UserManager) check() error {
 	for _, vv := range v2Users {
 
 		apiU, ok := apiUsersMap[vv.User.GetUUID()]
-		if ok {
+		if !ok {
 			logger.Infof("%s is not found in api users ", vv.User.GetUUID())
 			continue
 		}
