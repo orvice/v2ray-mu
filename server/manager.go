@@ -44,7 +44,7 @@ func (u *UserManager) check() error {
 	v2UsersMap := make(map[string]v2raymanager.User)
 
 	for _, user := range users {
-		apiUsersMap[user.V2rayUser.GetUUID()] = user
+		apiUsersMap[user.V2rayUser.UUID] = user
 	}
 	for _, user := range v2Users {
 		v2UsersMap[user.User.GetUUID()] = user.User
