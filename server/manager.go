@@ -224,6 +224,27 @@ func (u *UserManager) trojanCheck() error {
 
 			tjLogger.Infof("[trojan] get user reploy %v", resp)
 
+			// remove user
+			err = stream.Send(&service.SetUsersRequest{
+				Operation: service.SetUsersRequest_Delete,
+				Status: &service.UserStatus{
+					User: &service.User{
+						Password: user.V2rayUser.UUID,
+					},
+				},
+			})
+			if err != nil {
+				tjLogger.Errorf("[trojan] trojan remove user %s error %v", user.V2rayUser.UUID, err)
+			}
+			reply, err := stream.Recv()
+			if err != nil {
+				tjLogger.Errorw("[trojan] fail to recv from set user stream",
+					"error", err,
+				)
+			}
+
+			tjLogger.Infof("delete trojan user %s reply %v", user.V2rayUser.UUID, reply)
+
 			continue
 		}
 
