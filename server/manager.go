@@ -81,7 +81,6 @@ func (u *UserManager) v2rayCheck() error {
 
 	}
 
-	// check add
 	for _, v := range users {
 		if v.Enable == 0 {
 			continue
@@ -117,6 +116,13 @@ func (u *UserManager) v2rayCheck() error {
 			U:      vv.TrafficInfo.Up,
 			D:      vv.TrafficInfo.Down,
 		}
+
+		if vv.TrafficInfo.Up == 0 && vv.TrafficInfo.Down == 0 {
+			continue
+		}
+
+		logCount++
+
 		tl.Infow("save traffice log",
 			"user_id", apiU.Id,
 			"uuid", vv.User.GetUUID(),
