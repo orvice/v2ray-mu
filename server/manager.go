@@ -179,7 +179,7 @@ func (u *UserManager) trojanCheck() error {
 			continue
 		}
 		tjLogger.Infof("add trojan user %s", user.V2rayUser.UUID)
-		u.tm.setUserStream.Send(&service.SetUsersRequest{
+		err = u.tm.setUserStream.Send(&service.SetUsersRequest{
 			Operation: service.SetUsersRequest_Add,
 			Status: &service.UserStatus{
 
@@ -188,6 +188,11 @@ func (u *UserManager) trojanCheck() error {
 				},
 			},
 		})
+		if err != nil {
+			tjLogger.Errorw("add trojan user error",
+				"error", err,
+			)
+		}
 
 	}
 
