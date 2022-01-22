@@ -2,10 +2,12 @@ package server
 
 import (
 	"context"
+	"strings"
+
 	"github.com/catpie/musdk-go"
 	v2raymanager "github.com/orvice/v2ray-manager"
+	"github.com/p4gefau1t/trojan-go/api/service"
 	"github.com/weeon/utils/task"
-	"strings"
 )
 
 func getV2rayManager() ([]*v2raymanager.Manager, error) {
@@ -22,7 +24,20 @@ func getV2rayManager() ([]*v2raymanager.Manager, error) {
 	return vms, nil
 }
 
-func (u *UserManager) check() error {
+func getTrojanMgrs() ([]*TrojanMgr, error) {
+	arr := strings.Split(cfg.TrojanApiServerAddr, ",")
+	var trojanMgrs = make([]*TrojanMgr, len(arr))
+	for k, v := range arr {
+		tm, err := newTrojanMgr(v)
+		if err != nil {
+			return nil, err
+		}
+		trojanMgrs[k] = tm
+	}
+	return trojanMgrs, nil
+}
+
+func (u *UserManager) v2rayCheck() error {
 	ctx := context.Background()
 	logger.Info("check users from mu")
 	users, err := apiClient.GetUsers()
@@ -128,11 +143,51 @@ func (u *UserManager) addUser(ctx context.Context, user v2raymanager.User) {
 }
 
 func (u *UserManager) Run() error {
-	task.NewTaskAndRun("check_users", cfg.SyncTime, u.check, task.SetTaskLogger(sdkLogger))
+	switch u.targetType {
+	case v2ray:
+		task.NewTaskAndRun("check_users", cfg.SyncTime, u.v2rayCheck, task.SetTaskLogger(sdkLogger))
+	case trojan:
+		task.NewTaskAndRun("check_users", cfg.SyncTime, u.trojanCheck, task.SetTaskLogger(sdkLogger))
+	}
 	return nil
 
 }
 
 func (u *UserManager) Down() {
 	u.cancel()
+}
+
+func (u *UserManager) trojanCheck() error {
+	// ctx := context.Background()
+	logger.Info("check users from mu")
+	users, err := apiClient.GetUsers()
+	if err != nil {
+		logger.Errorw("get users fail ",
+			"error", err,
+		)
+		return err
+	}
+	logger.Infof("get %d users from mu", len(users))
+
+	// list users
+
+	// add all users
+	for _, user := range users {
+		if user.Enable == 0 {
+			continue
+		}
+		logger.Infof("add trojan user %s", user.V2rayUser.UUID)
+		u.tm.setUserStream.Send(&service.SetUsersRequest{
+			Operation: service.SetUsersRequest_Add,
+			Status: &service.UserStatus{
+
+				User: &service.User{
+					Password: user.V2rayUser.UUID,
+				},
+			},
+		})
+
+	}
+
+	return nil
 }
