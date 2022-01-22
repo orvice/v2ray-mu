@@ -182,7 +182,6 @@ func (u *UserManager) trojanCheck() error {
 		err = u.tm.setUserStream.Send(&service.SetUsersRequest{
 			Operation: service.SetUsersRequest_Add,
 			Status: &service.UserStatus{
-
 				User: &service.User{
 					Password: user.V2rayUser.UUID,
 				},
@@ -193,6 +192,14 @@ func (u *UserManager) trojanCheck() error {
 				"error", err,
 			)
 		}
+		reply, err := u.tm.setUserStream.Recv()
+		if err != nil {
+			tjLogger.Errorw("fail to recv from set user stream",
+				"error", err,
+			)
+		}
+
+		tjLogger.Infof("add trojan user %s reply %v", user.V2rayUser.UUID, reply)
 
 	}
 
