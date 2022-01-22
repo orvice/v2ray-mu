@@ -15,6 +15,7 @@ var (
 	logger    contract.Logger
 	tl        contract.Logger // traffic logger
 	sdkLogger contract.Logger
+	tjLogger  contract.Logger
 )
 
 func Init() {
@@ -22,6 +23,7 @@ func Init() {
 	logger, _ = log.NewLogger(cfg.LogPath+"mu.log", zapcore.DebugLevel)
 	tl, _ = log.NewLogger(cfg.LogPath+"traffic.log", zapcore.DebugLevel)
 	sdkLogger, _ = log.NewLogger(cfg.LogPath+"sdk.log", zapcore.DebugLevel)
+	tjLogger, _ = log.NewLogger(cfg.LogPath+"trojan.log", zapcore.DebugLevel)
 }
 
 func InitWebApi() {

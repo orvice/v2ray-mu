@@ -162,23 +162,23 @@ func (u *UserManager) trojanCheck() error {
 	logger.Info("check users from mu")
 	users, err := apiClient.GetUsers()
 	if err != nil {
-		logger.Errorw("get users fail ",
+		tjLogger.Errorw("get users fail ",
 			"error", err,
 		)
 		return err
 	}
-	logger.Infof("get %d users from mu", len(users))
+	tjLogger.Infof("get %d users from mu", len(users))
 
 	// list users
 	tus, err := u.tm.ListUsers()
-	logger.Infof("get %d users from trojan", len(tus))
+	tjLogger.Infof("get %d users from trojan", len(tus))
 
 	// add all users
 	for _, user := range users {
 		if user.Enable == 0 {
 			continue
 		}
-		logger.Infof("add trojan user %s", user.V2rayUser.UUID)
+		tjLogger.Infof("add trojan user %s", user.V2rayUser.UUID)
 		u.tm.setUserStream.Send(&service.SetUsersRequest{
 			Operation: service.SetUsersRequest_Add,
 			Status: &service.UserStatus{
