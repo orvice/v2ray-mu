@@ -164,7 +164,9 @@ func (u *UserManager) Down() {
 }
 
 func (u *UserManager) trojanCheck() error {
-	// ctx := context.Background()
+	ctx, cancel := context.WithCancel(u.ctx)
+	defer cancel()
+
 	logger.Info("[trojan] check users from mu")
 	users, err := apiClient.GetUsers()
 	if err != nil {
@@ -184,7 +186,7 @@ func (u *UserManager) trojanCheck() error {
 		tum[v.User.Password] = struct{}{}
 	}
 
-	stream, err := u.tm.client.SetUsers(context.Background())
+	stream, err := u.tm.client.SetUsers(ctx)
 	if err != nil {
 		return err
 	}
