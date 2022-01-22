@@ -184,12 +184,17 @@ func (u *UserManager) trojanCheck() error {
 		tum[v.User.Password] = struct{}{}
 	}
 
+	stream, err := u.tm.client.SetUsers(context.Background())
+	if err != nil {
+		return err
+	}
+
 	// add all users
 	for _, user := range users {
 		if user.Enable == 0 {
 			if _, ok := tum[user.V2rayUser.UUID]; ok {
 				// remove user
-				err = u.tm.setUserStream.Send(&service.SetUsersRequest{
+				err = stream.Send(&service.SetUsersRequest{
 					Operation: service.SetUsersRequest_Delete,
 					Status: &service.UserStatus{
 						User: &service.User{
@@ -200,7 +205,7 @@ func (u *UserManager) trojanCheck() error {
 				if err != nil {
 					tjLogger.Errorf("[trojan] trojan remove user %s error %v", user.V2rayUser.UUID, err)
 				}
-				reply, err := u.tm.setUserStream.Recv()
+				reply, err := stream.Recv()
 				if err != nil {
 					tjLogger.Errorw("[trojan] fail to recv from set user stream",
 						"error", err,
@@ -218,7 +223,7 @@ func (u *UserManager) trojanCheck() error {
 		}
 
 		tjLogger.Infof("[trojan] add trojan user %s", user.V2rayUser.UUID)
-		err = u.tm.setUserStream.Send(&service.SetUsersRequest{
+		err = stream.Send(&service.SetUsersRequest{
 			Operation: service.SetUsersRequest_Add,
 			Status: &service.UserStatus{
 				User: &service.User{
@@ -231,7 +236,7 @@ func (u *UserManager) trojanCheck() error {
 				"error", err,
 			)
 		}
-		reply, err := u.tm.setUserStream.Recv()
+		reply, err := stream.Recv()
 		if err != nil {
 			tjLogger.Errorw("[trojan] fail to recv from set user stream",
 				"error", err,

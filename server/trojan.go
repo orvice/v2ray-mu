@@ -10,9 +10,7 @@ import (
 )
 
 type TrojanMgr struct {
-	client         service.TrojanServerServiceClient
-	setUserStream  service.TrojanServerService_SetUsersClient
-	listUserStream service.TrojanServerService_ListUsersClient
+	client service.TrojanServerServiceClient
 }
 
 func newTrojanMgr(addr string) (*TrojanMgr, error) {
@@ -22,19 +20,8 @@ func newTrojanMgr(addr string) (*TrojanMgr, error) {
 	}
 	client := service.NewTrojanServerServiceClient(conn)
 
-	setUserStream, err := client.SetUsers(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	listStream, err := client.ListUsers(context.Background(), &service.ListUsersRequest{})
-	if err != nil {
-		return nil, err
-	}
-
 	return &TrojanMgr{
-		client:         client,
-		setUserStream:  setUserStream,
-		listUserStream: listStream,
+		client: client,
 	}, nil
 }
 
