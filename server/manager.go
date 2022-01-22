@@ -165,26 +165,59 @@ func (u *UserManager) Down() {
 
 func (u *UserManager) trojanCheck() error {
 	// ctx := context.Background()
-	logger.Info("check users from mu")
+	logger.Info("[trojan] check users from mu")
 	users, err := apiClient.GetUsers()
 	if err != nil {
-		tjLogger.Errorw("get users fail ",
+		tjLogger.Errorw("[trojan] get users fail ",
 			"error", err,
 		)
 		return err
 	}
-	tjLogger.Infof("get %d users from mu", len(users))
+	tjLogger.Infof("[trojan] get %d users from mu", len(users))
 
 	// list users
 	tus, err := u.tm.ListUsers()
-	tjLogger.Infof("get %d users from trojan", len(tus))
+	tjLogger.Infof("[trojan] get %d users from trojan", len(tus))
+
+	var tum = make(map[string]struct{})
+	for _, v := range tus {
+		tum[v.User.Password] = struct{}{}
+	}
 
 	// add all users
 	for _, user := range users {
 		if user.Enable == 0 {
+			if _, ok := tum[user.V2rayUser.UUID]; ok {
+				// remove user
+				err = u.tm.setUserStream.Send(&service.SetUsersRequest{
+					Operation: service.SetUsersRequest_Delete,
+					Status: &service.UserStatus{
+						User: &service.User{
+							Password: user.V2rayUser.UUID,
+						},
+					},
+				})
+				if err != nil {
+					tjLogger.Errorf("[trojan] trojan remove user %s error %v", user.V2rayUser.UUID, err)
+				}
+				reply, err := u.tm.setUserStream.Recv()
+				if err != nil {
+					tjLogger.Errorw("[trojan] fail to recv from set user stream",
+						"error", err,
+					)
+				}
+
+				tjLogger.Infof("delete trojan user %s reply %v", user.V2rayUser.UUID, reply)
+			}
 			continue
 		}
-		tjLogger.Infof("add trojan user %s", user.V2rayUser.UUID)
+
+		if _, ok := tum[user.V2rayUser.UUID]; ok {
+			tjLogger.Infof("[trojan] user %s exist,skip add", user.V2rayUser.UUID)
+			continue
+		}
+
+		tjLogger.Infof("[trojan] add trojan user %s", user.V2rayUser.UUID)
 		err = u.tm.setUserStream.Send(&service.SetUsersRequest{
 			Operation: service.SetUsersRequest_Add,
 			Status: &service.UserStatus{
@@ -194,18 +227,18 @@ func (u *UserManager) trojanCheck() error {
 			},
 		})
 		if err != nil {
-			tjLogger.Errorw("add trojan user error",
+			tjLogger.Errorw("[trojan] add trojan user error",
 				"error", err,
 			)
 		}
 		reply, err := u.tm.setUserStream.Recv()
 		if err != nil {
-			tjLogger.Errorw("fail to recv from set user stream",
+			tjLogger.Errorw("[trojan] fail to recv from set user stream",
 				"error", err,
 			)
 		}
 
-		tjLogger.Infof("add trojan user %s reply %v", user.V2rayUser.UUID, reply)
+		tjLogger.Infof("[trojan] add trojan user %s reply %v", user.V2rayUser.UUID, reply)
 
 	}
 
