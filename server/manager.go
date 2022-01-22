@@ -184,6 +184,7 @@ func (u *UserManager) trojanCheck() error {
 	var tum = make(map[string]struct{})
 	for _, v := range tus {
 		tum[v.User.Password] = struct{}{}
+		tjLogger.Infof("[trojan] user %s traffic %v", v.User.Password, v.TrafficTotal)
 	}
 
 	stream, err := u.tm.client.SetUsers(ctx)
