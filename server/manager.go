@@ -170,6 +170,8 @@ func (u *UserManager) trojanCheck() error {
 	logger.Infof("get %d users from mu", len(users))
 
 	// list users
+	tus, err := u.tm.ListUsers()
+	logger.Infof("get %d users from trojan", len(tus))
 
 	// add all users
 	for _, user := range users {

@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 
@@ -39,11 +38,12 @@ func newTrojanMgr(addr string) (*TrojanMgr, error) {
 	}, nil
 }
 
-func (t *TrojanMgr) ListUsers() {
+func (t *TrojanMgr) ListUsers() ([]*service.UserStatus, error) {
 	stream, err := t.client.ListUsers(context.Background(), &service.ListUsersRequest{})
 	if err != nil {
 		log.Printf("failed to call grpc command: %v", err)
 	}
+	var out = make([]*service.UserStatus, 0)
 	for {
 		reply, err := stream.Recv()
 		if err == io.EOF {
@@ -51,8 +51,9 @@ func (t *TrojanMgr) ListUsers() {
 		}
 		if err != nil {
 			log.Printf("faild to recv: %v", err)
+			return out, nil
 		}
-		fmt.Println(reply)
-		break
+		out = append(out, reply.Status)
 	}
+	return out, nil
 }
