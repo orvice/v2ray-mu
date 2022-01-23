@@ -6,7 +6,6 @@ import (
 
 	"github.com/catpie/musdk-go"
 	v2raymanager "github.com/orvice/v2ray-manager"
-	"github.com/p4gefau1t/trojan-go/api/service"
 	"github.com/weeon/utils/task"
 )
 
@@ -255,28 +254,15 @@ func (u *UserManager) trojanCheck() error {
 		}
 
 		tjLogger.Infof("[trojan] add trojan user %s", user.V2rayUser.UUID)
-		err = stream.Send(&service.SetUsersRequest{
-			Operation: service.SetUsersRequest_Add,
-			Status: &service.UserStatus{
-				User: &service.User{
-					Password: user.V2rayUser.UUID,
-				},
-			},
-		})
+		err = u.tm.AddUser(ctx, user.V2rayUser.UUID)
 		if err != nil {
 			tjLogger.Errorw("[trojan] add trojan user error",
 				"error", err,
 			)
-		}
-		reply, err := stream.Recv()
-		if err != nil {
-			tjLogger.Errorw("[trojan] fail to recv from set user stream",
-				"error", err,
-			)
+			continue
 		}
 
-		tjLogger.Infof("[trojan] add trojan user %s reply %v", user.V2rayUser.UUID, reply)
-
+		tjLogger.Infof("[trojan] add trojan user %s success", user.V2rayUser.UUID)
 	}
 
 	tjLogger.Infof("traffic log count %d", trafficLogCount)
