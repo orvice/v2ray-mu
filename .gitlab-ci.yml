@@ -17,6 +17,8 @@ build:bin:
 build:docker:
   stage: build
   image: docker
+  services:
+    - docker:dind
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
