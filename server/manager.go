@@ -2,10 +2,12 @@ package server
 
 import (
 	"context"
+	"strings"
+
 	"github.com/catpie/musdk-go"
 	v2raymanager "github.com/orvice/v2ray-manager"
+	"github.com/p4gefau1t/trojan-go/api/service"
 	"github.com/weeon/utils/task"
-	"strings"
 )
 
 func getV2rayManager() ([]*v2raymanager.Manager, error) {
@@ -22,7 +24,20 @@ func getV2rayManager() ([]*v2raymanager.Manager, error) {
 	return vms, nil
 }
 
-func (u *UserManager) check() error {
+func getTrojanMgrs() ([]*TrojanMgr, error) {
+	arr := strings.Split(cfg.TrojanApiServerAddr, ",")
+	var trojanMgrs = make([]*TrojanMgr, len(arr))
+	for k, v := range arr {
+		tm, err := newTrojanMgr(v)
+		if err != nil {
+			return nil, err
+		}
+		trojanMgrs[k] = tm
+	}
+	return trojanMgrs, nil
+}
+
+func (u *UserManager) v2rayCheck() error {
 	ctx := context.Background()
 	logger.Info("check users from mu")
 	users, err := apiClient.GetUsers()
@@ -66,7 +81,6 @@ func (u *UserManager) check() error {
 
 	}
 
-	// check add
 	for _, v := range users {
 		if v.Enable == 0 {
 			continue
@@ -102,6 +116,13 @@ func (u *UserManager) check() error {
 			U:      vv.TrafficInfo.Up,
 			D:      vv.TrafficInfo.Down,
 		}
+
+		if vv.TrafficInfo.Up == 0 && vv.TrafficInfo.Down == 0 {
+			continue
+		}
+
+		logCount++
+
 		tl.Infow("save traffice log",
 			"user_id", apiU.Id,
 			"uuid", vv.User.GetUUID(),
@@ -128,11 +149,121 @@ func (u *UserManager) addUser(ctx context.Context, user v2raymanager.User) {
 }
 
 func (u *UserManager) Run() error {
-	task.NewTaskAndRun("check_users", cfg.SyncTime, u.check, task.SetTaskLogger(sdkLogger))
+	switch u.targetType {
+	case v2ray:
+		task.NewTaskAndRun("check_users", cfg.SyncTime, u.v2rayCheck, task.SetTaskLogger(sdkLogger))
+	case trojan:
+		task.NewTaskAndRun("check_users", cfg.SyncTime, u.trojanCheck, task.SetTaskLogger(sdkLogger))
+	}
 	return nil
 
 }
 
 func (u *UserManager) Down() {
 	u.cancel()
+}
+
+func (u *UserManager) trojanCheck() error {
+	ctx, cancel := context.WithCancel(u.ctx)
+	defer cancel()
+
+	logger.Info("[trojan] check users from mu")
+	users, err := apiClient.GetUsers()
+	if err != nil {
+		tjLogger.Errorw("[trojan] get users fail ",
+			"error", err,
+		)
+		return err
+	}
+	tjLogger.Infof("[trojan] get %d users from mu", len(users))
+
+	// list users
+	tus, err := u.tm.ListUsers()
+	tjLogger.Infof("[trojan] get %d users from trojan", len(tus))
+
+	var tum = make(map[string]struct{})
+	for _, v := range tus {
+		tum[v.User.Password] = struct{}{}
+		tjLogger.Infof("[trojan] user %s traffic %v", v.User.Hash, v.TrafficTotal)
+	}
+
+	stream, err := u.tm.client.SetUsers(ctx)
+	if err != nil {
+		return err
+	}
+
+	getUserClient, err := u.tm.client.GetUsers(ctx)
+	if err != nil {
+		return err
+	}
+
+	// add all users
+	for _, user := range users {
+		resp, err := u.tm.GetUser(ctx, getUserClient, user.V2rayUser.UUID)
+		tjLogger.Infof("[trojan] get user reploy %v", resp)
+		if user.Enable == 0 {
+
+			if err != nil {
+				continue
+			}
+
+			if resp == nil {
+				continue
+			}
+
+			// remove user
+			err = stream.Send(&service.SetUsersRequest{
+				Operation: service.SetUsersRequest_Delete,
+				Status: &service.UserStatus{
+					User: &service.User{
+						Password: user.V2rayUser.UUID,
+					},
+				},
+			})
+			if err != nil {
+				tjLogger.Errorf("[trojan] trojan remove user %s error %v", user.V2rayUser.UUID, err)
+			}
+			reply, err := stream.Recv()
+			if err != nil {
+				tjLogger.Errorw("[trojan] fail to recv from set user stream",
+					"error", err,
+				)
+			}
+
+			tjLogger.Infof("delete trojan user %s reply %v", user.V2rayUser.UUID, reply)
+
+			continue
+		}
+
+		if err == nil && resp.Status.User != nil {
+			tjLogger.Infof("[trojan] user %s exist", user.V2rayUser.UUID)
+			continue
+		}
+
+		tjLogger.Infof("[trojan] add trojan user %s", user.V2rayUser.UUID)
+		err = stream.Send(&service.SetUsersRequest{
+			Operation: service.SetUsersRequest_Add,
+			Status: &service.UserStatus{
+				User: &service.User{
+					Password: user.V2rayUser.UUID,
+				},
+			},
+		})
+		if err != nil {
+			tjLogger.Errorw("[trojan] add trojan user error",
+				"error", err,
+			)
+		}
+		reply, err := stream.Recv()
+		if err != nil {
+			tjLogger.Errorw("[trojan] fail to recv from set user stream",
+				"error", err,
+			)
+		}
+
+		tjLogger.Infof("[trojan] add trojan user %s reply %v", user.V2rayUser.UUID, reply)
+
+	}
+
+	return nil
 }

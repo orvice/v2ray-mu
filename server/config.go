@@ -15,6 +15,8 @@ type Config struct {
 	Base     BaseCfg
 	SyncTime time.Duration
 
+	TrojanApiServerAddr string
+
 	V2rayClientAddr string
 	V2rayTag        string
 
@@ -38,6 +40,7 @@ func initCfg() {
 	}
 	st := utils.GetEnvInt("SYNC_TIME", 60)
 	cfg.SyncTime = time.Second * time.Duration(st)
+	cfg.TrojanApiServerAddr = utils.GetEnv("TROJAN_API_SERVER_ADDR")
 	cfg.V2rayClientAddr = utils.GetEnv("V2RAY_ADDR")
 	cfg.V2rayTag = utils.GetEnv("V2RAY_TAG")
 	cfg.LogPath = utils.GetEnv("LOG_DIR", "/var/log/v2ray-mu/")
