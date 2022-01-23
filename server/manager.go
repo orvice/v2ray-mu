@@ -201,6 +201,29 @@ func (u *UserManager) trojanCheck() error {
 	for _, user := range users {
 		resp, err := u.tm.GetUser(ctx, getUserClient, user.V2rayUser.UUID)
 		tjLogger.Infof("[trojan] get user reploy %v", resp)
+
+		if resp != nil && resp.Status != nil {
+			status, ok := u.tm.userStatusMap[user.Id]
+			if ok {
+				u := resp.Status.TrafficTotal.UploadTraffic - status.TrafficTotal.UploadTraffic
+				d := resp.Status.TrafficTotal.DownloadTraffic - status.TrafficTotal.DownloadTraffic
+				if u > 0 && d > 0 {
+					trafficLog := musdk.UserTrafficLog{
+						UserId: user.Id,
+						U:      int64(u),
+						D:      int64(d),
+					}
+
+					tl.Infow("[trojan] save raffice log",
+						"user_id", user.Id,
+					)
+					apiClient.SaveTrafficLog(trafficLog)
+				}
+			}
+
+			u.tm.userStatusMap[user.Id] = resp.Status
+		}
+
 		if user.Enable == 0 {
 
 			if err != nil {

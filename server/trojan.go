@@ -11,6 +11,8 @@ import (
 
 type TrojanMgr struct {
 	client service.TrojanServerServiceClient
+
+	userStatusMap map[int64]*service.UserStatus
 }
 
 func newTrojanMgr(addr string) (*TrojanMgr, error) {
@@ -21,7 +23,8 @@ func newTrojanMgr(addr string) (*TrojanMgr, error) {
 	client := service.NewTrojanServerServiceClient(conn)
 
 	return &TrojanMgr{
-		client: client,
+		client:        client,
+		userStatusMap: make(map[int64]*service.UserStatus),
 	}, nil
 }
 
