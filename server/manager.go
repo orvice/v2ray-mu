@@ -195,8 +195,8 @@ func (u *UserManager) trojanCheck() error {
 		if resp != nil && resp.Status != nil {
 			status, ok := u.tm.userStatusMap[user.Id]
 			if ok {
-				u := resp.Status.TrafficTotal.UploadTraffic - status.TrafficTotal.UploadTraffic
-				d := resp.Status.TrafficTotal.DownloadTraffic - status.TrafficTotal.DownloadTraffic
+				u := int64(resp.Status.TrafficTotal.UploadTraffic) - int64(status.TrafficTotal.UploadTraffic)
+				d := int64(resp.Status.TrafficTotal.DownloadTraffic) - int64(status.TrafficTotal.DownloadTraffic)
 				if u > 0 && d > 0 {
 					trafficLog := musdk.UserTrafficLog{
 						UserId: user.Id,
