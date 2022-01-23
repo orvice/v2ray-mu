@@ -176,11 +176,6 @@ func (u *UserManager) trojanCheck() error {
 	}
 	tjLogger.Infof("[trojan] get %d users from mu", len(users))
 
-	stream, err := u.tm.client.SetUsers(ctx)
-	if err != nil {
-		return err
-	}
-
 	var trafficLogCount int
 	var trafficLogs = make([]musdk.UserTrafficLog, 0)
 
@@ -234,14 +229,8 @@ func (u *UserManager) trojanCheck() error {
 			if err != nil {
 				tjLogger.Errorf("[trojan] trojan remove user %s error %v", user.V2rayUser.UUID, err)
 			}
-			reply, err := stream.Recv()
-			if err != nil {
-				tjLogger.Errorw("[trojan] fail to recv from set user stream",
-					"error", err,
-				)
-			}
 
-			tjLogger.Infof("delete trojan user %s reply %v", user.V2rayUser.UUID, reply)
+			tjLogger.Infof("delete trojan user %s success ", user.V2rayUser.UUID)
 
 			continue
 		}
