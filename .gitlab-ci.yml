@@ -7,7 +7,14 @@ stages:
   - notify
   - deploy
 
-build:
+build:bin:
+  stage: build
+  image: golang
+  script:
+    - go mod download
+    - make build
+
+build:docker:
   stage: build
   image: docker
   script:
@@ -25,24 +32,3 @@ test:
   script:
     - go test -v ./...
 
-
-notify_fail:
-  image: orvice/telegram-notify:shell
-  stage: notify
-  script:
-    - /app/bin/notify.sh  ❌
-  when: on_failure
-
-notify_success:
-  image: orvice/telegram-notify:shell
-  stage: notify
-  script:
-    - /app/bin/notify.sh  ✅
-  when: on_success
-
-
-deploy_dev:
-  image: orvice/ubuntu-base
-  stage: deploy
-  script:
-    - echo "todo"
