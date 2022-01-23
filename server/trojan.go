@@ -45,7 +45,7 @@ func (t *TrojanMgr) ListUsers() ([]*service.UserStatus, error) {
 	return out, nil
 }
 
-func (t *TrojanMgr) GetUser(ctx context.Context, stream service.TrojanServerService_GetUsersClient, password string) (*service.UserStatus, error) {
+func (t *TrojanMgr) GetUser(ctx context.Context, stream service.TrojanServerService_GetUsersClient, password string) (*service.GetUsersResponse, error) {
 	var err error
 	err = stream.Send(&service.GetUsersRequest{
 		User: &service.User{
@@ -67,5 +67,5 @@ func (t *TrojanMgr) GetUser(ctx context.Context, stream service.TrojanServerServ
 		)
 		return nil, err
 	}
-	return resp.Status, nil
+	return resp, nil
 }

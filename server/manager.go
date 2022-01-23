@@ -199,12 +199,15 @@ func (u *UserManager) trojanCheck() error {
 
 	// add all users
 	for _, user := range users {
+		resp, err := u.tm.GetUser(ctx, getUserClient, user.V2rayUser.UUID)
+		tjLogger.Infof("[trojan] get user reploy %v", resp)
 		if user.Enable == 0 {
 
-			userStatus, err := u.tm.GetUser(ctx, getUserClient, user.V2rayUser.UUID)
-
-			tjLogger.Infof("[trojan] get user reploy %v", userStatus)
 			if err != nil {
+				continue
+			}
+
+			if resp == nil {
 				continue
 			}
 
@@ -232,10 +235,7 @@ func (u *UserManager) trojanCheck() error {
 			continue
 		}
 
-		userStatus, err := u.tm.GetUser(ctx, getUserClient, user.V2rayUser.UUID)
-
-		tjLogger.Infof("[trojan] get user reploy %v", userStatus)
-		if err == nil && userStatus.User != nil {
+		if err == nil && resp.Status.User != nil {
 			tjLogger.Infof("[trojan] user %s exist", user.V2rayUser.UUID)
 			continue
 		}
