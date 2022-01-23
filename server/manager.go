@@ -185,6 +185,13 @@ func (u *UserManager) trojanCheck() error {
 		resp, err := u.tm.GetUser(ctx, user.V2rayUser.UUID)
 		tjLogger.Infof("[trojan] get user reploy %v", resp)
 
+		if err != nil {
+			tjLogger.Errorw("[trojan] get user fail ",
+				"error", err,
+			)
+			continue
+		}
+
 		if resp != nil && resp.Status != nil {
 			status, ok := u.tm.userStatusMap[user.Id]
 			if ok {
@@ -238,7 +245,7 @@ func (u *UserManager) trojanCheck() error {
 		tjLogger.Infof("[trojan] user %d %s is enable", user.Id, user.V2rayUser.UUID)
 
 		tjLogger.Infof("check user is exist %s", user.V2rayUser.UUID)
-		if err == nil && resp.Status.User != nil {
+		if resp.Success && resp.Status != nil {
 			tjLogger.Infof("[trojan] user %s exist", user.V2rayUser.UUID)
 			continue
 		}
