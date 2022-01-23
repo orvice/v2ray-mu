@@ -237,6 +237,7 @@ func (u *UserManager) trojanCheck() error {
 
 		tjLogger.Infof("[trojan] user %d %s is enable", user.Id, user.V2rayUser.UUID)
 
+		tjLogger.Infof("check user is exist %s", user.V2rayUser.UUID)
 		if err == nil && resp.Status.User != nil {
 			tjLogger.Infof("[trojan] user %s exist", user.V2rayUser.UUID)
 			continue
