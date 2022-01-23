@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/google/gops/agent"
 	"github.com/orvice/v2ray-mu/server"
 	"github.com/weeon/utils/process"
 )
@@ -24,6 +26,12 @@ func main() {
 			_ = v.Run()
 		}(v)
 	}
+
+	go func() {
+		if err := agent.Listen(agent.Options{}); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	process.WaitSignal()
 }

@@ -2,6 +2,7 @@ module github.com/orvice/v2ray-mu
 
 require (
 	github.com/catpie/musdk-go v0.0.0-20210724175518-2670ae5912f8
+	github.com/google/gops v0.3.22
 	github.com/orvice/v2ray-manager v0.0.0-20210728171632-949a271f158d
 	github.com/p4gefau1t/trojan-go v0.10.6
 	github.com/weeon/contract v0.0.0-20190520152601-a4ee53bdb563
@@ -30,7 +31,7 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/net v0.0.0-20210913180222-943fd674d43e // indirect
-	golang.org/x/sys v0.0.0-20210820121016-41cdb8703e55 // indirect
+	golang.org/x/sys v0.0.0-20210902050250-f475640dd07b // indirect
 	golang.org/x/text v0.3.6 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect

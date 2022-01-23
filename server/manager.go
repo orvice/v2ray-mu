@@ -6,7 +6,6 @@ import (
 
 	"github.com/catpie/musdk-go"
 	v2raymanager "github.com/orvice/v2ray-manager"
-	"github.com/p4gefau1t/trojan-go/api/service"
 	"github.com/weeon/utils/task"
 )
 
@@ -177,93 +176,92 @@ func (u *UserManager) trojanCheck() error {
 	}
 	tjLogger.Infof("[trojan] get %d users from mu", len(users))
 
-	// list users
-	tus, err := u.tm.ListUsers()
-	tjLogger.Infof("[trojan] get %d users from trojan", len(tus))
-
-	var tum = make(map[string]struct{})
-	for _, v := range tus {
-		tum[v.User.Password] = struct{}{}
-		tjLogger.Infof("[trojan] user %s traffic %v", v.User.Hash, v.TrafficTotal)
-	}
-
-	stream, err := u.tm.client.SetUsers(ctx)
-	if err != nil {
-		return err
-	}
-
-	getUserClient, err := u.tm.client.GetUsers(ctx)
-	if err != nil {
-		return err
-	}
+	var trafficLogCount int
+	var trafficLogs = make([]musdk.UserTrafficLog, 0)
 
 	// add all users
 	for _, user := range users {
-		resp, err := u.tm.GetUser(ctx, getUserClient, user.V2rayUser.UUID)
+		tjLogger.Infof("[trojan] start get user %d %s", user.Id, user.V2rayUser.UUID)
+		resp, err := u.tm.GetUser(ctx, user.V2rayUser.UUID)
 		tjLogger.Infof("[trojan] get user reploy %v", resp)
-		if user.Enable == 0 {
 
-			if err != nil {
-				continue
+		if err != nil {
+			tjLogger.Errorw("[trojan] get user fail ",
+				"error", err,
+			)
+			continue
+		}
+
+		if resp != nil && resp.Status != nil {
+			status, ok := u.tm.userStatusMap[user.Id]
+			if ok {
+				u := resp.Status.TrafficTotal.UploadTraffic - status.TrafficTotal.UploadTraffic
+				d := resp.Status.TrafficTotal.DownloadTraffic - status.TrafficTotal.DownloadTraffic
+				if u > 0 && d > 0 {
+					trafficLog := musdk.UserTrafficLog{
+						UserId: user.Id,
+						U:      int64(u),
+						D:      int64(d),
+					}
+
+					trafficLogs = append(trafficLogs, trafficLog)
+
+					tjLogger.Infow("[trojan] save raffice log",
+						"user_id", user.Id,
+						"traffic_log", trafficLog,
+					)
+					trafficLogCount++
+					apiClient.SaveTrafficLog(trafficLog)
+				}
 			}
 
-			if resp == nil {
+			u.tm.userStatusMap[user.Id] = resp.Status
+		}
+
+		if user.Enable == 0 {
+
+			tjLogger.Infof("[trojan] user %d %s is disable", user.Id, user.V2rayUser.UUID)
+
+			if !resp.Success {
 				continue
 			}
 
 			// remove user
-			err = stream.Send(&service.SetUsersRequest{
-				Operation: service.SetUsersRequest_Delete,
-				Status: &service.UserStatus{
-					User: &service.User{
-						Password: user.V2rayUser.UUID,
-					},
-				},
-			})
+			logger.Infof("[trojan] remove user %d %s", user.Id, user.V2rayUser.UUID)
+			err = u.tm.RemoveUser(ctx, user.V2rayUser.UUID)
 			if err != nil {
 				tjLogger.Errorf("[trojan] trojan remove user %s error %v", user.V2rayUser.UUID, err)
 			}
-			reply, err := stream.Recv()
-			if err != nil {
-				tjLogger.Errorw("[trojan] fail to recv from set user stream",
-					"error", err,
-				)
-			}
 
-			tjLogger.Infof("delete trojan user %s reply %v", user.V2rayUser.UUID, reply)
+			tjLogger.Infof("delete trojan user %s success ", user.V2rayUser.UUID)
 
 			continue
 		}
 
-		if err == nil && resp.Status.User != nil {
+		tjLogger.Infof("[trojan] user %d %s is enable", user.Id, user.V2rayUser.UUID)
+
+		tjLogger.Infof("check user is exist %s", user.V2rayUser.UUID)
+		if resp.Success && resp.Status != nil {
 			tjLogger.Infof("[trojan] user %s exist", user.V2rayUser.UUID)
 			continue
 		}
 
 		tjLogger.Infof("[trojan] add trojan user %s", user.V2rayUser.UUID)
-		err = stream.Send(&service.SetUsersRequest{
-			Operation: service.SetUsersRequest_Add,
-			Status: &service.UserStatus{
-				User: &service.User{
-					Password: user.V2rayUser.UUID,
-				},
-			},
-		})
+		err = u.tm.AddUser(ctx, user.V2rayUser.UUID)
 		if err != nil {
 			tjLogger.Errorw("[trojan] add trojan user error",
 				"error", err,
 			)
-		}
-		reply, err := stream.Recv()
-		if err != nil {
-			tjLogger.Errorw("[trojan] fail to recv from set user stream",
-				"error", err,
-			)
+			continue
 		}
 
-		tjLogger.Infof("[trojan] add trojan user %s reply %v", user.V2rayUser.UUID, reply)
-
+		tjLogger.Infof("[trojan] add trojan user %s success", user.V2rayUser.UUID)
 	}
+
+	tjLogger.Infof("traffic log count %d", trafficLogCount)
+	tjLogger.Infow("traffic logs",
+		"traffic_logs", trafficLogs,
+	)
 
 	return nil
 }
