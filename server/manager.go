@@ -222,11 +222,7 @@ func (u *UserManager) trojanCheck() error {
 
 			tjLogger.Infof("[trojan] user %d %s is disable", user.Id, user.V2rayUser.UUID)
 
-			if err != nil {
-				continue
-			}
-
-			if resp == nil {
+			if !resp.Success {
 				continue
 			}
 
