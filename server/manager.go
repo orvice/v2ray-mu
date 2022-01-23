@@ -209,7 +209,7 @@ func (u *UserManager) trojanCheck() error {
 
 					trafficLogs = append(trafficLogs, trafficLog)
 
-					tl.Infow("[trojan] save raffice log",
+					tjLogger.Infow("[trojan] save raffice log",
 						"user_id", user.Id,
 						"traffic_log", trafficLog,
 					)
