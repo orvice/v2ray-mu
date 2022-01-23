@@ -177,16 +177,6 @@ func (u *UserManager) trojanCheck() error {
 	}
 	tjLogger.Infof("[trojan] get %d users from mu", len(users))
 
-	// list users
-	tus, err := u.tm.ListUsers()
-	tjLogger.Infof("[trojan] get %d users from trojan", len(tus))
-
-	var tum = make(map[string]struct{})
-	for _, v := range tus {
-		tum[v.User.Password] = struct{}{}
-		tjLogger.Infof("[trojan] user %s traffic %v", v.User.Hash, v.TrafficTotal)
-	}
-
 	stream, err := u.tm.client.SetUsers(ctx)
 	if err != nil {
 		return err
@@ -196,6 +186,8 @@ func (u *UserManager) trojanCheck() error {
 	if err != nil {
 		return err
 	}
+
+	var trafficLogCount int
 
 	// add all users
 	for _, user := range users {
@@ -218,6 +210,7 @@ func (u *UserManager) trojanCheck() error {
 						"user_id", user.Id,
 						"traffic_log", trafficLog,
 					)
+					trafficLogCount++
 					apiClient.SaveTrafficLog(trafficLog)
 				}
 			}
@@ -288,6 +281,8 @@ func (u *UserManager) trojanCheck() error {
 		tjLogger.Infof("[trojan] add trojan user %s reply %v", user.V2rayUser.UUID, reply)
 
 	}
+
+	tjLogger.Infof("traffic log count %d", trafficLogCount)
 
 	return nil
 }
