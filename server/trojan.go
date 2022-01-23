@@ -44,3 +44,28 @@ func (t *TrojanMgr) ListUsers() ([]*service.UserStatus, error) {
 	}
 	return out, nil
 }
+
+func (t *TrojanMgr) GetUser(ctx context.Context, stream service.TrojanServerService_GetUsersClient, password string) (*service.UserStatus, error) {
+	var err error
+	err = stream.Send(&service.GetUsersRequest{
+		User: &service.User{
+			Password: password,
+		},
+	})
+
+	if err != nil {
+		tjLogger.Errorw("[trojan] get user fail ",
+			"error", err,
+		)
+		return nil, err
+	}
+
+	resp, err := stream.Recv()
+	if err != nil {
+		tjLogger.Errorw("[trojan] get user fail ",
+			"error", err,
+		)
+		return nil, err
+	}
+	return resp.Status, nil
+}

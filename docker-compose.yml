@@ -1,7 +1,7 @@
 version: "2"
 
 services:
-  ss:
+  v2ray-mu:
     image: orvice/v2ray-mu
     restart: always
     volumes:

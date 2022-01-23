@@ -201,28 +201,12 @@ func (u *UserManager) trojanCheck() error {
 	for _, user := range users {
 		if user.Enable == 0 {
 
-			err = getUserClient.Send(&service.GetUsersRequest{
-				User: &service.User{
-					Password: user.V2rayUser.UUID,
-				},
-			})
+			userStatus, err := u.tm.GetUser(ctx, getUserClient, user.V2rayUser.UUID)
 
+			tjLogger.Infof("[trojan] get user reploy %v", userStatus)
 			if err != nil {
-				tjLogger.Errorw("[trojan] get user fail ",
-					"error", err,
-				)
 				continue
 			}
-
-			resp, err := getUserClient.Recv()
-			if err != nil {
-				tjLogger.Errorw("[trojan] get user fail ",
-					"error", err,
-				)
-				continue
-			}
-
-			tjLogger.Infof("[trojan] get user reploy %v", resp)
 
 			// remove user
 			err = stream.Send(&service.SetUsersRequest{
@@ -248,8 +232,11 @@ func (u *UserManager) trojanCheck() error {
 			continue
 		}
 
-		if _, ok := tum[user.V2rayUser.UUID]; ok {
-			tjLogger.Infof("[trojan] user %s exist,skip add", user.V2rayUser.UUID)
+		userStatus, err := u.tm.GetUser(ctx, getUserClient, user.V2rayUser.UUID)
+
+		tjLogger.Infof("[trojan] get user reploy %v", userStatus)
+		if err == nil && userStatus.User != nil {
+			tjLogger.Infof("[trojan] user %s exist", user.V2rayUser.UUID)
 			continue
 		}
 
