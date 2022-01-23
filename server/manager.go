@@ -188,6 +188,7 @@ func (u *UserManager) trojanCheck() error {
 	}
 
 	var trafficLogCount int
+	var trafficLogs = make([]musdk.UserTrafficLog, 0)
 
 	// add all users
 	for _, user := range users {
@@ -205,6 +206,8 @@ func (u *UserManager) trojanCheck() error {
 						U:      int64(u),
 						D:      int64(d),
 					}
+
+					trafficLogs = append(trafficLogs, trafficLog)
 
 					tl.Infow("[trojan] save raffice log",
 						"user_id", user.Id,
@@ -283,6 +286,9 @@ func (u *UserManager) trojanCheck() error {
 	}
 
 	tjLogger.Infof("traffic log count %d", trafficLogCount)
+	tjLogger.Infow("traffic logs",
+		"traffic_logs", trafficLogs,
+	)
 
 	return nil
 }
