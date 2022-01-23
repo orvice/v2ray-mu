@@ -219,6 +219,8 @@ func (u *UserManager) trojanCheck() error {
 
 		if user.Enable == 0 {
 
+			tjLogger.Infof("[trojan] user %d %s is disable", user.Id, user.V2rayUser.UUID)
+
 			if err != nil {
 				continue
 			}
@@ -229,14 +231,7 @@ func (u *UserManager) trojanCheck() error {
 
 			// remove user
 			logger.Infof("[trojan] remove user %d %s", user.Id, user.V2rayUser.UUID)
-			err = stream.Send(&service.SetUsersRequest{
-				Operation: service.SetUsersRequest_Delete,
-				Status: &service.UserStatus{
-					User: &service.User{
-						Password: user.V2rayUser.UUID,
-					},
-				},
-			})
+			err = u.tm.RemoveUser(ctx, user.V2rayUser.UUID)
 			if err != nil {
 				tjLogger.Errorf("[trojan] trojan remove user %s error %v", user.V2rayUser.UUID, err)
 			}
@@ -251,6 +246,8 @@ func (u *UserManager) trojanCheck() error {
 
 			continue
 		}
+
+		tjLogger.Infof("[trojan] user %d %s is enable", user.Id, user.V2rayUser.UUID)
 
 		if err == nil && resp.Status.User != nil {
 			tjLogger.Infof("[trojan] user %s exist", user.V2rayUser.UUID)

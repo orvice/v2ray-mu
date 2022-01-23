@@ -82,3 +82,43 @@ func (t *TrojanMgr) GetUser(ctx context.Context, password string) (*service.GetU
 	}
 	return resp, nil
 }
+
+func (t *TrojanMgr) RemoveUser(ctx context.Context, password string) error {
+	var err error
+
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	defer cancel()
+
+	stream, err := t.client.SetUsers(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = stream.Send(&service.SetUsersRequest{
+		Operation: service.SetUsersRequest_Delete,
+		Status: &service.UserStatus{
+			User: &service.User{
+				Password: password,
+			},
+		},
+	})
+
+	if err != nil {
+		tjLogger.Errorw("[trojan] remove user fail ",
+			"error", err,
+		)
+		return err
+	}
+
+	resp, err := stream.Recv()
+	if err != nil {
+		tjLogger.Errorw("[trojan] remove user fail ",
+			"error", err,
+		)
+		return err
+	}
+	tjLogger.Infow("[trojan] remove user success ",
+		"resp", resp,
+	)
+	return nil
+}
