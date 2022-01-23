@@ -228,6 +228,7 @@ func (u *UserManager) trojanCheck() error {
 			}
 
 			// remove user
+			logger.Infof("[trojan] remove user %d %s", user.Id, user.V2rayUser.UUID)
 			err = stream.Send(&service.SetUsersRequest{
 				Operation: service.SetUsersRequest_Delete,
 				Status: &service.UserStatus{
