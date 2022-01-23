@@ -182,18 +182,13 @@ func (u *UserManager) trojanCheck() error {
 		return err
 	}
 
-	getUserClient, err := u.tm.client.GetUsers(ctx)
-	if err != nil {
-		return err
-	}
-
 	var trafficLogCount int
 	var trafficLogs = make([]musdk.UserTrafficLog, 0)
 
 	// add all users
 	for _, user := range users {
 		tjLogger.Infof("[trojan] start get user %d %s", user.Id, user.V2rayUser.UUID)
-		resp, err := u.tm.GetUser(ctx, getUserClient, user.V2rayUser.UUID)
+		resp, err := u.tm.GetUser(ctx, user.V2rayUser.UUID)
 		tjLogger.Infof("[trojan] get user reploy %v", resp)
 
 		if resp != nil && resp.Status != nil {

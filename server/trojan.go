@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"log"
+	"time"
 
 	"github.com/p4gefau1t/trojan-go/api/service"
 	"google.golang.org/grpc"
@@ -48,8 +49,17 @@ func (t *TrojanMgr) ListUsers() ([]*service.UserStatus, error) {
 	return out, nil
 }
 
-func (t *TrojanMgr) GetUser(ctx context.Context, stream service.TrojanServerService_GetUsersClient, password string) (*service.GetUsersResponse, error) {
+func (t *TrojanMgr) GetUser(ctx context.Context, password string) (*service.GetUsersResponse, error) {
 	var err error
+
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	defer cancel()
+
+	stream, err := t.client.GetUsers(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	err = stream.Send(&service.GetUsersRequest{
 		User: &service.User{
 			Password: password,
