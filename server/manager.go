@@ -216,6 +216,7 @@ func (u *UserManager) trojanCheck() error {
 
 					tl.Infow("[trojan] save raffice log",
 						"user_id", user.Id,
+						"traffic_log", trafficLog,
 					)
 					apiClient.SaveTrafficLog(trafficLog)
 				}
