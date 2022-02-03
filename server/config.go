@@ -29,14 +29,14 @@ type BaseCfg struct {
 type WebApiCfg struct {
 	Url    string
 	Token  string
-	NodeId int
+	NodeID string
 }
 
 func initCfg() {
 	cfg.WebApi = WebApiCfg{
 		Url:    utils.GetEnv("MU_URI"),
 		Token:  utils.GetEnv("MU_TOKEN"),
-		NodeId: utils.GetEnvInt("MU_NODE_ID"),
+		NodeID: utils.GetEnv("MU_NODE_ID"),
 	}
 	st := utils.GetEnvInt("SYNC_TIME", 60)
 	cfg.SyncTime = time.Second * time.Duration(st)

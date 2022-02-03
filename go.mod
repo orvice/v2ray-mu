@@ -1,7 +1,7 @@
 module github.com/orvice/v2ray-mu
 
 require (
-	github.com/catpie/musdk-go v0.0.0-20210724175518-2670ae5912f8
+	github.com/catpie/musdk-go v0.0.0-20220203130438-2a16f5893029
 	github.com/google/gops v0.3.22
 	github.com/orvice/v2ray-manager v0.0.0-20210728171632-949a271f158d
 	github.com/p4gefau1t/trojan-go v0.10.6
