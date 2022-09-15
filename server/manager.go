@@ -142,8 +142,10 @@ func (u *UserManager) addUser(ctx context.Context, user v2raymanager.User) {
 		return
 	}
 	if !exist {
-		logger.Errorf("add user %s success", user.GetUUID())
+		logger.Infof("add user %s success", user.GetUUID())
 	}
+
+	logger.Infof("add user %s result: AlreadyExists", user.GetUUID())
 	return
 }
 
