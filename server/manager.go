@@ -225,7 +225,7 @@ func (u *UserManager) trojanCheck() error {
 			tjLogger.Infof("[trojan] user %d %s is disable", user.Id, user.V2rayUser.UUID)
 
 			// remove user
-			logger.Infof("[trojan] remove user %d %s", user.Id, user.V2rayUser.UUID)
+			logger.Infof("[trojan] start remove user %d %s", user.Id, user.V2rayUser.UUID)
 			err = u.tm.RemoveUser(ctx, user.V2rayUser.UUID)
 			if err != nil {
 				tjLogger.Errorf("[trojan] trojan remove user %s error %v", user.V2rayUser.UUID, err)
