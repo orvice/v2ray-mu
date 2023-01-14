@@ -185,7 +185,7 @@ func (u *UserManager) trojanCheck() error {
 	for _, user := range users {
 		tjLogger.Infof("[trojan] start get user %d %s", user.Id, user.V2rayUser.UUID)
 		resp, err := u.tm.GetUser(ctx, user.V2rayUser.UUID)
-		tjLogger.Infof("[trojan] get user reploy %v", resp)
+		tjLogger.Infof("%s [trojan] get user reploy %v", resp, user.V2rayUser.UUID)
 
 		if err != nil {
 			tjLogger.Errorw("[trojan] get user fail ",
