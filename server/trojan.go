@@ -83,7 +83,7 @@ func (t *TrojanMgr) GetUser(ctx context.Context, password string) (*service.GetU
 	return resp, nil
 }
 
-func (t *TrojanMgr) RemoveUser(ctx context.Context, password string) error {
+func (t *TrojanMgr) RemoveUser(ctx context.Context, password, hash string) error {
 	var err error
 
 	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
