@@ -2,9 +2,8 @@ package server
 
 import (
 	"github.com/catpie/musdk-go"
-	"github.com/weeon/contract"
 	"github.com/weeon/log"
-	"go.uber.org/zap/zapcore"
+	"golang.org/x/exp/slog"
 )
 
 var (
@@ -12,25 +11,27 @@ var (
 )
 
 var (
-	logger    contract.Logger
-	tl        contract.Logger // traffic logger
-	sdkLogger contract.Logger
-	tjLogger  contract.Logger
+	logger    *slog.Logger
+	tl        *slog.Logger // traffic logger
+	sdkLogger *slog.Logger
+	tjLogger  *slog.Logger
 )
 
 func Init() {
 	initCfg()
-	logger, _ = log.NewLogger(cfg.LogPath+"mu.log", zapcore.DebugLevel)
-	tl, _ = log.NewLogger(cfg.LogPath+"traffic.log", zapcore.DebugLevel)
-	sdkLogger, _ = log.NewLogger(cfg.LogPath+"sdk.log", zapcore.DebugLevel)
-	tjLogger, _ = log.NewLogger(cfg.LogPath+"trojan.log", zapcore.DebugLevel)
+
+	logger = slog.Default()
+	tl = slog.Default()
+	sdkLogger = slog.Default()
+	tjLogger = slog.Default()
 }
 
 func InitWebApi() {
 	logger.Info("init mu api")
+	log.SetupStdoutLogger()
 	cfg := cfg.WebApi
-	apiClient = musdk.NewClient(cfg.Url, cfg.Token, cfg.NodeID, musdk.TypeV2ray, sdkLogger)
-	apiClient.SetLogger(sdkLogger)
+	apiClient = musdk.NewClient(cfg.Url, cfg.Token, cfg.NodeID, musdk.TypeV2ray, log.GetDefault())
+	apiClient.SetLogger(log.GetDefault())
 	go apiClient.UpdateTrafficDaemon()
 	return
 }

@@ -67,7 +67,7 @@ func (t *TrojanMgr) GetUser(ctx context.Context, password string) (*service.GetU
 	})
 
 	if err != nil {
-		tjLogger.Errorw("[trojan] get user fail ",
+		tjLogger.Error("[trojan] get user fail ",
 			"error", err,
 		)
 		return nil, err
@@ -75,7 +75,7 @@ func (t *TrojanMgr) GetUser(ctx context.Context, password string) (*service.GetU
 
 	resp, err := stream.Recv()
 	if err != nil {
-		tjLogger.Errorw("[trojan] get user fail ",
+		tjLogger.Error("[trojan] get user fail ",
 			"error", err,
 		)
 		return nil, err
@@ -104,7 +104,7 @@ func (t *TrojanMgr) RemoveUser(ctx context.Context, password, hash string) error
 	})
 
 	if err != nil {
-		tjLogger.Errorw("[trojan] remove user fail ",
+		tjLogger.Error("[trojan] remove user fail ",
 			"error", err,
 		)
 		return err
@@ -112,12 +112,12 @@ func (t *TrojanMgr) RemoveUser(ctx context.Context, password, hash string) error
 
 	resp, err := stream.Recv()
 	if err != nil {
-		tjLogger.Errorw("[trojan] remove user fail ",
+		tjLogger.Error("[trojan] remove user fail ",
 			"error", err,
 		)
 		return err
 	}
-	tjLogger.Infow("[trojan] remove user success ",
+	tjLogger.Info("[trojan] remove user success ",
 		"resp", resp,
 	)
 	return nil
@@ -144,7 +144,7 @@ func (t *TrojanMgr) AddUser(ctx context.Context, password string) error {
 	})
 
 	if err != nil {
-		tjLogger.Errorw("[trojan] add user fail ",
+		tjLogger.Error("[trojan] add user fail ",
 			"error", err,
 		)
 		return err
@@ -152,12 +152,12 @@ func (t *TrojanMgr) AddUser(ctx context.Context, password string) error {
 
 	resp, err := stream.Recv()
 	if err != nil {
-		tjLogger.Errorw("[trojan] add user fail ",
+		tjLogger.Error("[trojan] add user fail ",
 			"error", err,
 		)
 		return err
 	}
-	tjLogger.Infow("[trojan] add user success ",
+	tjLogger.Info("[trojan] add user success ",
 		"resp", resp,
 	)
 	return nil

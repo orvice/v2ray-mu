@@ -6,6 +6,7 @@ import (
 
 	"github.com/catpie/musdk-go"
 	v2raymanager "github.com/orvice/v2ray-manager"
+	"github.com/weeon/log"
 	"github.com/weeon/utils/task"
 )
 
@@ -13,7 +14,7 @@ func getV2rayManager() ([]*v2raymanager.Manager, error) {
 	arr := strings.Split(cfg.V2rayClientAddr, ",")
 	var vms = make([]*v2raymanager.Manager, len(arr))
 	for k, v := range arr {
-		vm, err := v2raymanager.NewManager(v, cfg.V2rayTag, sdkLogger)
+		vm, err := v2raymanager.NewManager(v, cfg.V2rayTag, log.GetDefault())
 		if err != nil {
 			return nil, err
 		}
@@ -41,16 +42,16 @@ func (u *UserManager) v2rayCheck() error {
 	logger.Info("check users from mu")
 	users, err := apiClient.GetUsers()
 	if err != nil {
-		logger.Errorw("get users fail ",
+		logger.Error("get users fail ",
 			"error", err,
 		)
 		return err
 	}
-	logger.Infof("get %d users from mu", len(users))
+	logger.Info("get  users from mu", "len", len(users))
 
 	v2Users, err := u.vm.GetUserList(ctx, true)
 	if err != nil {
-		logger.Errorw("get users list error",
+		logger.Error("get users list error",
 			"error", err.Error())
 	}
 
@@ -58,7 +59,7 @@ func (u *UserManager) v2rayCheck() error {
 	v2UsersMap := make(map[string]v2raymanager.User)
 
 	for _, user := range users {
-		logger.Debugf("api users map add %s", user.V2rayUser.UUID)
+		logger.Debug("api users map add ", "uuid", user.V2rayUser.UUID)
 		apiUsersMap[user.V2rayUser.UUID] = user
 	}
 	for _, user := range v2Users {
@@ -69,12 +70,12 @@ func (u *UserManager) v2rayCheck() error {
 	for _, v := range v2Users {
 		uu, ok := apiUsersMap[v.User.GetUUID()]
 		if !ok {
-			logger.Infof("v2 user not in api, %s should be removed", v.User.GetUUID())
+			logger.Info("v2 user not in api  should be removed", "uuid", v.User.GetUUID())
 			u.vm.RemoveUser(ctx, v.User)
 		}
 
 		if uu.Enable == 0 {
-			logger.Infof("user %s is disable, should be removed", v.User.GetUUID())
+			logger.Info("user  should be removed", "uuid", v.User.GetUUID())
 			u.vm.RemoveUser(ctx, v.User)
 		}
 
@@ -87,14 +88,14 @@ func (u *UserManager) v2rayCheck() error {
 
 		_, ok := v2UsersMap[v.V2rayUser.UUID]
 		if !ok {
-			logger.Infof("user %s may be should be add", v.V2rayUser.UUID)
+			logger.Info("user may be should be add", "uuid", v.V2rayUser.UUID)
 			u.addUser(ctx, &v.V2rayUser)
 		}
 	}
 
 	var logCount int
 
-	logger.Infof("start v2 user data check len %d", len(v2Users))
+	logger.Info("start v2 user data check len ", "len", len(v2Users))
 
 	for _, vv := range v2Users {
 
@@ -171,7 +172,7 @@ func (u *UserManager) trojanCheck() error {
 	logger.Info("[trojan] check users from mu")
 	users, err := apiClient.GetUsers()
 	if err != nil {
-		tjLogger.Errorw("[trojan] get users fail ",
+		tjLogger.Error("[trojan] get users fail ",
 			"error", err,
 		)
 		return err
@@ -188,7 +189,7 @@ func (u *UserManager) trojanCheck() error {
 		tjLogger.Infof("%s [trojan] get user reploy %v", resp, user.V2rayUser.UUID)
 
 		if err != nil {
-			tjLogger.Errorw("[trojan] get user fail ",
+			tjLogger.Error("[trojan] get user fail ",
 				"error", err,
 			)
 			continue
@@ -257,7 +258,7 @@ func (u *UserManager) trojanCheck() error {
 		tjLogger.Infof("[trojan] add trojan user %s", user.V2rayUser.UUID)
 		err = u.tm.AddUser(ctx, user.V2rayUser.UUID)
 		if err != nil {
-			tjLogger.Errorw("[trojan] add trojan user error",
+			tjLogger.Error("[trojan] add trojan user error",
 				"error", err,
 			)
 			continue
