@@ -68,6 +68,7 @@ func (u *UserManager) v2rayCheck() error {
 
 	// check remove user
 	for _, v := range v2Users {
+		logger.Info("v2 user check ", "uuid", v.User.GetUUID())
 		uu, ok := apiUsersMap[v.User.GetUUID()]
 		if !ok {
 			logger.Info("v2 user not in api  should be removed", "uuid", v.User.GetUUID())
@@ -82,6 +83,7 @@ func (u *UserManager) v2rayCheck() error {
 	}
 
 	for _, v := range users {
+
 		if v.Enable == 0 {
 			continue
 		}
@@ -98,7 +100,7 @@ func (u *UserManager) v2rayCheck() error {
 	logger.Info("start v2 user data check len ", "len", len(v2Users))
 
 	for _, vv := range v2Users {
-
+		logger.Info("v2 user check ", "uuid", vv.User.GetUUID())
 		apiU, ok := apiUsersMap[vv.User.GetUUID()]
 		if !ok {
 			logger.Info("not found in api users ", "uuid", vv.User.GetUUID())
