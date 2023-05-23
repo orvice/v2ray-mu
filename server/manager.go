@@ -101,7 +101,7 @@ func (u *UserManager) v2rayCheck() error {
 
 		apiU, ok := apiUsersMap[vv.User.GetUUID()]
 		if !ok {
-			logger.Infof("%s is not found in api users ", vv.User.GetUUID())
+			logger.Info("not found in api users ", "uuid", vv.User.GetUUID())
 			continue
 		}
 
@@ -123,7 +123,7 @@ func (u *UserManager) v2rayCheck() error {
 
 		logCount++
 
-		tl.Infow("save traffice log",
+		tl.Info("save traffice log",
 			"user_id", apiU.Id,
 			"uuid", vv.User.GetUUID(),
 			"traffic Log", trafficLog,
@@ -131,7 +131,7 @@ func (u *UserManager) v2rayCheck() error {
 		apiClient.SaveTrafficLog(trafficLog)
 	}
 
-	logger.Infof("finish traffic log post len %d", logCount)
+	logger.Info("finish traffic log post len", "len", logCount)
 
 	return nil
 }
@@ -139,23 +139,23 @@ func (u *UserManager) v2rayCheck() error {
 func (u *UserManager) addUser(ctx context.Context, user v2raymanager.User) {
 	exist, err := u.vm.AddUser(ctx, user)
 	if err != nil {
-		logger.Errorf("add user %s error %v", user.GetUUID(), err)
+		logger.Error("add user  error", "uuid", user.GetUUID(), "err", err)
 		return
 	}
 	if !exist {
-		logger.Infof("add user %s success", user.GetUUID())
+		logger.Info("add user  success", "uuid", user.GetUUID())
 	}
 
-	logger.Infof("add user %s result: AlreadyExists", user.GetUUID())
+	logger.Info("add user  result: AlreadyExists", "uuid", user.GetUUID())
 	return
 }
 
 func (u *UserManager) Run() error {
 	switch u.targetType {
 	case v2ray:
-		task.NewTaskAndRun("check_users", cfg.SyncTime, u.v2rayCheck, task.SetTaskLogger(sdkLogger))
+		task.NewTaskAndRun("check_users", cfg.SyncTime, u.v2rayCheck, task.SetTaskLogger(log.GetDefault()))
 	case trojan:
-		task.NewTaskAndRun("check_users", cfg.SyncTime, u.trojanCheck, task.SetTaskLogger(sdkLogger))
+		task.NewTaskAndRun("check_users", cfg.SyncTime, u.trojanCheck, task.SetTaskLogger(log.GetDefault()))
 	}
 	return nil
 
@@ -177,16 +177,16 @@ func (u *UserManager) trojanCheck() error {
 		)
 		return err
 	}
-	tjLogger.Infof("[trojan] get %d users from mu", len(users))
+	tjLogger.Info("[trojan] get users from mu", "len", len(users))
 
 	var trafficLogCount int
 	var trafficLogs = make([]musdk.UserTrafficLog, 0)
 
 	// add all users
 	for _, user := range users {
-		tjLogger.Infof("[trojan] start get user %d %s", user.Id, user.V2rayUser.UUID)
+		tjLogger.Info("[trojan] start get user ", "id", user.Id, "uuid", user.V2rayUser.UUID)
 		resp, err := u.tm.GetUser(ctx, user.V2rayUser.UUID)
-		tjLogger.Infof("%s [trojan] get user reploy %v", resp, user.V2rayUser.UUID)
+		tjLogger.Info(" [trojan] get user reploy ", "resp", resp, "uuid", user.V2rayUser.UUID)
 
 		if err != nil {
 			tjLogger.Error("[trojan] get user fail ",
@@ -209,7 +209,7 @@ func (u *UserManager) trojanCheck() error {
 
 					trafficLogs = append(trafficLogs, trafficLog)
 
-					tjLogger.Infow("[trojan] save raffice log",
+					tjLogger.Info("[trojan] save raffice log",
 						"user_id", user.Id,
 						"traffic_log", trafficLog,
 					)
@@ -223,39 +223,39 @@ func (u *UserManager) trojanCheck() error {
 
 		if user.Enable == 0 {
 
-			tjLogger.Infof("[trojan] user %d %s is disable", user.Id, user.V2rayUser.UUID)
+			tjLogger.Info("[trojan] user  is disable", "id", user.Id, "uuid", user.V2rayUser.UUID)
 
 			if resp == nil {
 				continue
 			}
 
 			if resp.Status == nil {
-				tjLogger.Infof("[trojan] user %d %s status is nil", user.Id, user.V2rayUser.UUID)
+				tjLogger.Info("[trojan] user   status is nil", "id", user.Id, "uuid", user.V2rayUser.UUID)
 				continue
 			}
 
 			// remove user
-			logger.Infof("[trojan] start remove user %d %s", user.Id, user.V2rayUser.UUID, resp.Status.User.Hash)
+			logger.Info("[trojan] start remove user ", "id", user.Id, "uuid", user.V2rayUser.UUID, "user.hash", resp.Status.User.Hash)
 			err = u.tm.RemoveUser(ctx, user.V2rayUser.UUID, resp.Status.User.Hash)
 			if err != nil {
-				tjLogger.Errorf("[trojan] trojan remove user %s error %v", user.V2rayUser.UUID, err)
+				tjLogger.Error("[trojan] trojan remove ", "uuid", user.V2rayUser.UUID, "err", err)
 				continue
 			}
 
-			tjLogger.Infof("delete trojan user %s success ", user.V2rayUser.UUID)
+			tjLogger.Info("delete trojan user  success ", "uuid", user.V2rayUser.UUID)
 
 			continue
 		}
 
-		tjLogger.Infof("[trojan] user %d %s is enable", user.Id, user.V2rayUser.UUID)
+		tjLogger.Info("[trojan] user  is enable", "id", user.Id, "uuid", user.V2rayUser.UUID)
 
-		tjLogger.Infof("check user is exist %s", user.V2rayUser.UUID)
+		tjLogger.Info("check user is exist ", "uuid", user.V2rayUser.UUID)
 		if resp.Success && resp.Status != nil {
-			tjLogger.Infof("[trojan] user %s exist", user.V2rayUser.UUID)
+			tjLogger.Info("[trojan] user  exist", "uuid", user.V2rayUser.UUID)
 			continue
 		}
 
-		tjLogger.Infof("[trojan] add trojan user %s", user.V2rayUser.UUID)
+		tjLogger.Info("[trojan] add trojan user ", "uuid", user.V2rayUser.UUID)
 		err = u.tm.AddUser(ctx, user.V2rayUser.UUID)
 		if err != nil {
 			tjLogger.Error("[trojan] add trojan user error",
@@ -264,11 +264,11 @@ func (u *UserManager) trojanCheck() error {
 			continue
 		}
 
-		tjLogger.Infof("[trojan] add trojan user %s success", user.V2rayUser.UUID)
+		tjLogger.Info("[trojan] add trojan user  success", "uuid", user.V2rayUser.UUID)
 	}
 
-	tjLogger.Infof("traffic log count %d", trafficLogCount)
-	tjLogger.Infow("traffic logs",
+	tjLogger.Info("traffic log count ", "count", trafficLogCount)
+	tjLogger.Info("traffic logs",
 		"traffic_logs", trafficLogs,
 	)
 
