@@ -1,6 +1,8 @@
 package server
 
 import (
+	"os"
+
 	"github.com/catpie/musdk-go"
 	"github.com/weeon/log"
 	"golang.org/x/exp/slog"
@@ -20,10 +22,12 @@ var (
 func Init() {
 	initCfg()
 
-	logger = slog.Default()
-	tl = slog.Default()
-	sdkLogger = slog.Default()
-	tjLogger = slog.Default()
+	textHandler := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{})
+	logger = slog.New(textHandler)
+
+	tl = slog.New(textHandler)
+	sdkLogger = slog.New(textHandler)
+	tjLogger = slog.New(textHandler)
 }
 
 func InitWebApi() {
