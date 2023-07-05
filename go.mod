@@ -7,11 +7,11 @@ require (
 	github.com/p4gefau1t/trojan-go v0.10.6
 	github.com/weeon/log v0.0.0-20210217051817-63fe9a730962
 	github.com/weeon/utils v0.0.0-20210724174708-113b40b2e152
-	google.golang.org/grpc v1.46.0
+	google.golang.org/grpc v1.53.0
 )
 
 require (
-	github.com/cespare/xxhash/v2 v2.1.1 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-metro v0.0.0-20200812162917-85c65e2d0165 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/go-redis/redis/v8 v8.5.0 // indirect
@@ -33,7 +33,7 @@ require (
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
-	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect
+	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
@@ -48,7 +48,7 @@ require (
 	github.com/stretchr/testify v1.7.1 // indirect
 	go.starlark.net v0.0.0-20220302181546-5411bad688d1 // indirect
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 	inet.af/netaddr v0.0.0-20211027220019-c74959edd3b6 // indirect
 )
 
