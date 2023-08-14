@@ -3,9 +3,10 @@ package server
 import (
 	"os"
 
+	"log/slog"
+
 	"github.com/catpie/musdk-go"
 	"github.com/weeon/log"
-	"golang.org/x/exp/slog"
 )
 
 var (
@@ -13,10 +14,10 @@ var (
 )
 
 var (
-	logger    *slog.Logger
-	tl        *slog.Logger // traffic logger
-	sdkLogger *slog.Logger
-	tjLogger  *slog.Logger
+	logger *slog.Logger
+	tl     *slog.Logger // traffic logger
+	// sdkLogger *slog.Logger
+	tjLogger *slog.Logger
 )
 
 func Init() {
@@ -26,7 +27,7 @@ func Init() {
 	logger = slog.New(textHandler)
 
 	tl = slog.New(textHandler)
-	sdkLogger = slog.New(textHandler)
+	// sdkLogger = slog.New(textHandler)
 	tjLogger = slog.New(textHandler)
 }
 
@@ -37,5 +38,4 @@ func InitWebApi() {
 	apiClient = musdk.NewClient(cfg.Url, cfg.Token, cfg.NodeID, musdk.TypeV2ray, log.GetDefault())
 	apiClient.SetLogger(log.GetDefault())
 	go apiClient.UpdateTrafficDaemon()
-	return
 }

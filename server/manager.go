@@ -149,7 +149,6 @@ func (u *UserManager) addUser(ctx context.Context, user v2raymanager.User) {
 	}
 
 	logger.Info("add user  result: AlreadyExists", "uuid", user.GetUUID())
-	return
 }
 
 func (u *UserManager) Run() error {
