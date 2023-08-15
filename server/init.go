@@ -35,7 +35,7 @@ func InitWebApi() {
 	logger.Info("init mu api")
 	log.SetupStdoutLogger()
 	cfg := cfg.WebApi
-	apiClient = musdk.NewClient(cfg.Url, cfg.Token, cfg.NodeID, musdk.TypeV2ray, log.GetDefault())
-	apiClient.SetLogger(log.GetDefault())
+	apiClient = musdk.NewClient(cfg.Url, cfg.Token, cfg.NodeID, musdk.TypeV2ray, logger)
+	apiClient.SetLogger(logger)
 	go apiClient.UpdateTrafficDaemon()
 }

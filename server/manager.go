@@ -14,7 +14,7 @@ func getV2rayManager() ([]*v2raymanager.Manager, error) {
 	arr := strings.Split(cfg.V2rayClientAddr, ",")
 	var vms = make([]*v2raymanager.Manager, len(arr))
 	for k, v := range arr {
-		vm, err := v2raymanager.NewManager(v, cfg.V2rayTag, log.GetDefault())
+		vm, err := v2raymanager.NewManager(v, cfg.V2rayTag, logger)
 		if err != nil {
 			return nil, err
 		}
