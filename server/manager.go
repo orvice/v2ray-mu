@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"log/slog"
 	"strings"
 
 	"github.com/catpie/musdk-go"
@@ -12,6 +13,7 @@ import (
 
 func getV2rayManager() ([]*v2raymanager.Manager, error) {
 	arr := strings.Split(cfg.V2rayClientAddr, ",")
+	slog.Info("v2ray clients", "addr", arr)
 	var vms = make([]*v2raymanager.Manager, len(arr))
 	for k, v := range arr {
 		vm, err := v2raymanager.NewManager(v, cfg.V2rayTag, logger)
