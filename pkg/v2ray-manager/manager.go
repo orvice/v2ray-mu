@@ -34,6 +34,7 @@ type TrafficInfo struct {
 }
 
 func NewManager(addr, tag string, l *slog.Logger) (*Manager, error) {
+	slog.Info("create new mgr", "addr", addr)
 	cc, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		slog.Error("grpc dail failed", "addr", addr)

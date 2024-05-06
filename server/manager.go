@@ -23,7 +23,6 @@ func getV2rayManager() ([]*v2raymanager.Manager, error) {
 		}
 		vms[k] = vm
 	}
-
 	return vms, nil
 }
 
