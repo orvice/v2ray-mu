@@ -18,6 +18,7 @@ func getV2rayManager() ([]*v2raymanager.Manager, error) {
 	for k, v := range arr {
 		vm, err := v2raymanager.NewManager(v, cfg.V2rayTag, logger)
 		if err != nil {
+			slog.Error("new mgr failed", "addr", v)
 			return nil, err
 		}
 		vms[k] = vm
