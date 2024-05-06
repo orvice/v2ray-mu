@@ -30,10 +30,7 @@ func NewUserManager() ([]*UserManager, error) {
 	if err != nil {
 		return nil, err
 	}
-	tms, err := getTrojanMgrs()
-	if err != nil {
-		return nil, err
-	}
+	tms, tjErr := getTrojanMgrs()
 
 	ums := make([]*UserManager, len(vms)+len(tms))
 	for k, v := range vms {
@@ -46,15 +43,16 @@ func NewUserManager() ([]*UserManager, error) {
 			targetType: v2ray,
 		}
 	}
-
-	for k, v := range tms {
-		ums[len(vms)+k] = &UserManager{
-			users:      make(map[int64]musdk.User),
-			usersMu:    new(sync.RWMutex),
-			ctx:        ctx,
-			cancel:     cancel,
-			tm:         v,
-			targetType: trojan,
+	if tjErr == nil {
+		for k, v := range tms {
+			ums[len(vms)+k] = &UserManager{
+				users:      make(map[int64]musdk.User),
+				usersMu:    new(sync.RWMutex),
+				ctx:        ctx,
+				cancel:     cancel,
+				tm:         v,
+				targetType: trojan,
+			}
 		}
 	}
 
