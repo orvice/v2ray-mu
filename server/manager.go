@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/catpie/musdk-go"
-	v2raymanager "github.com/orvice/v2ray-manager"
+	v2raymanager "github.com/orvice/v2ray-mu/pkg/v2ray-manager"
 	"github.com/weeon/log"
 	"github.com/weeon/utils/task"
 )

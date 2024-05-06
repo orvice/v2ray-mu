@@ -3,7 +3,6 @@ module github.com/orvice/v2ray-mu
 require (
 	github.com/catpie/musdk-go v0.0.0-20230815021801-7d27a00f9c60
 	github.com/google/gops v0.3.22
-	github.com/orvice/v2ray-manager v0.0.0-20230815022413-5818dc23dc53
 	github.com/p4gefau1t/trojan-go v0.10.6
 	github.com/weeon/log v0.0.0-20230815031624-ca3ca7b87ee5
 	github.com/weeon/utils v0.0.0-20210724174708-113b40b2e152
@@ -19,7 +18,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3 // indirect
 	github.com/v2fly/ss-bloomring v0.0.0-20210312155135-28617310f63e // indirect
-	github.com/v2fly/v2ray-core/v4 v4.44.0 // indirect
+	github.com/v2fly/v2ray-core/v4 v4.44.0
 	github.com/weeon/contract v0.0.0-20190520152601-a4ee53bdb563 // indirect
 	github.com/xtaci/smux v1.5.15 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
