@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"log/slog"
 	"os"
 
 	"github.com/google/gops/agent"
@@ -17,7 +17,8 @@ func main() {
 
 	um, err := server.NewUserManager()
 	if err != nil {
-		fmt.Println(err)
+		slog.Error("NewUserManager failed",
+			"error", err)
 		os.Exit(0)
 	}
 
