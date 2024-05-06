@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log/slog"
 	"time"
 
 	"github.com/weeon/utils"
@@ -44,4 +45,7 @@ func initCfg() {
 	cfg.V2rayClientAddr = utils.GetEnv("V2RAY_ADDR")
 	cfg.V2rayTag = utils.GetEnv("V2RAY_TAG")
 	cfg.LogPath = utils.GetEnv("LOG_DIR", "/var/log/v2ray-mu/")
+	slog.Info("config",
+		"v2ray_tag", cfg.V2rayTag,
+		"v2ray_addr", cfg.V2rayClientAddr)
 }
